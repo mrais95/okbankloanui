@@ -1,0 +1,363 @@
+var state = false;
+$(document).ready(function(){
+	console.log("locale" + _LOCALE_);
+	if (_LOCALE_ == "en"){
+		document.getElementById("en_href").style.color = 'white';
+		document.getElementById("id_href").style.color = 'black';
+	}
+	if (_LOCALE_ == "in"){
+		document.getElementById("en_href").style.color = 'black';
+		document.getElementById("id_href").style.color = 'white';
+	}
+	
+	makeCurrency('rqusAmt');
+	makeCurrency('monthInc');
+	var agtCdF = $("#agtCd").val();
+	const blockAgent = ["001","002", "003"];
+	if(blockAgent.includes(agtCdF)){
+		modal({
+      		  type: 'error',
+      		  buttons:[{
+      			  text: "OK", //Button Text
+      			  eKey: true, //Enter Keypress
+      			  addClass: 'btn-light-red btn-square', //Button Classes (btn-large | btn-small | btn-green | btn-light-green | btn-purple | btn-orange | btn-pink | btn-turquoise | btn-blue | btn-light-blue | btn-light-red | btn-red | btn-yellow | btn-white | btn-black | btn-rounded | btn-circle | btn-square | btn-disabled)
+      		  }],
+      		  text: "Service Temporarily Unavailable",
+      		  callback: function(result) {
+      			  location.href = '/'
+      		  }
+			  });
+	}
+	
+//	$("#custNm").alphanumeric({nocaps:false}); 
+	console.log(state);
+	if(state){
+		$("#retailApply").removeAttr('href');
+	}
+});
+
+function layerpopupOpen(target){
+    $("."+target+".popup").fadeIn(400);
+}
+function layerpopupClose(){
+
+    $(".popup").each(function(){
+        if( $(this).css("display") == 'block' ){
+            $(this).fadeOut(400);
+        }
+    });
+}
+$('.popup .dim').on('click',function(){
+    layerpopupClose();
+});   
+
+function aggrTermYes(){
+	var checkBox = document.getElementById("agrmYn");
+	checkBox.checked = true;
+	layerpopupClose();
+}
+
+
+function modal(t){return $.cModal(t)}!function(t){t.cModal=function(n){var e,o={type:"default",title:null,text:null,size:"normal",buttons:[{text:"OK",val:!0,onClick:function(){return!0}}],center:!0,autoclose:!1,callback:null,onShow:null,animate:!0,closeClick:!0,closable:!0,theme:"default",background:null,zIndex:1050,buttonText:{ok:"OK",yes:"Yes",cancel:"Cancel"},template:'<div class="modal-box"><div class="modal-inner"><div class="modal-title"><a class="modal-close-btn"></a></div><div class="modal-text"></div><div class="modal-buttons"></div></div></div>',_classes:{box:".modal-box",boxInner:".modal-inner",title:".modal-title",content:".modal-text",buttons:".modal-buttons",closebtn:".modal-close-btn"}},n=t.extend({},o,n),a=t("<div id='modal-window' />").hide(),l=n._classes.box,s=a.append(n.template),i={init:function(){t("#modal-window").remove(),i._setStyle(),i._modalShow(),i._modalConent(),a.on("click","a.modal-btn",function(){i._modalBtn(t(this))}).on("click",n._classes.closebtn,function(){e=!1,i._modalHide()}).click(function(t){n.closeClick&&"modal-window"==t.target.id&&(e=!1,i._modalHide())}),t(window).bind("keyup",i._keyUpF).resize(function(){var t=n.animate;n.animate=!1,i._position(),n.animate=t})},_setStyle:function(){a.css({position:"fixed",width:"100%",height:"100%",top:"0",left:"0","z-index":n.zIndex,overflow:"auto"}),a.find(n._classes.box).css({position:"absolute"})},_keyUpF:function(t){switch(t.keyCode){case 13:if(s.find("input:not(.modal-prompt-input),textarea").is(":focus"))return!1;i._modalBtn(a.find(n._classes.buttons+" a.modal-btn"+("undefined"!=typeof i.btnForEKey&&a.find(n._classes.buttons+" a.modal-btn:eq("+i.btnForEKey+")").size()>0?":eq("+i.btnForEKey+")":":last-child")));break;case 27:i._modalHide()}},_modalShow:function(){t("body").css({overflow:"hidden",width:t("body").innerWidth()}).append(s)},_modalHide:function(o){if(n.closable===!1)return!1;e="undefined"==typeof e?!1:e;var s=function(){if(null!=n.callback&&"function"==typeof n.callback&&0==n.callback(e,a,i.actions)?!1:!0){a.fadeOut(200,function(){t(this).remove(),t("body").css({overflow:"",width:""})});var o=100*parseFloat(t(l).css("top"))/parseFloat(t(l).parent().css("height"));t(l).stop(!0,!0).animate({top:o+(n.animate?3:0)+"%"},"fast")}};o?setTimeout(function(){s()},o):s(),t(window).unbind("keyup",i._keyUpF)},_modalConent:function(){var e=n._classes.title,o=n._classes.content,s=n._classes.buttons,d=n.buttonText,c=["alert","confirm","prompt"],u=["xenon","atlant","reseted"];if(-1==t.inArray(n.type,c)&&"default"!=n.type&&t(l).addClass("modal-type-"+n.type),t(l).addClass(n.size&&null!=n.size?"modal-size-"+n.size:"modal-size-normal"),n.theme&&null!=n.theme&&"default"!=n.theme&&t(l).addClass((-1==t.inArray(n.theme,u)?"":"modal-theme-")+n.theme),n.background&&null!=n.background&&a.css("background-color",n.background),n.title||null!=n.title?t(e).prepend("<h3>"+n.title+"</h3>"):t(e).remove(),"prompt"==n.type?n.text=(null!=n.text?n.text:"")+'<input type="text" name="modal-prompt-input" class="modal-prompt-input" autocomplete="off" autofocus="on" />':"",t(o).html(n.text),n.buttons||null!=n.buttons){var r="";switch(n.type){case"alert":r='<a class="modal-btn'+(n.buttons[0].addClass?" "+n.buttons[0].addClass:"")+'">'+d.ok+"</a>";break;case"confirm":r='<a class="modal-btn'+(n.buttons[0].addClass?" "+n.buttons[0].addClass:"")+'">'+d.cancel+'</a><a class="modal-btn '+(n.buttons[1]&&n.buttons[1].addClass?" "+n.buttons[1].addClass:"btn-light-blue")+'">'+d.yes+"</a>";break;case"prompt":r='<a class="modal-btn'+(n.buttons[0].addClass?" "+n.buttons[0].addClass:"")+'">'+d.cancel+'</a><a class="modal-btn '+(n.buttons[1]&&n.buttons[1].addClass?" "+n.buttons[1].addClass:"btn-light-blue")+'">'+d.ok+"</a>";break;default:n.buttons.length>0&&t.isArray(n.buttons)?t.each(n.buttons,function(t,n){var e=n.addClass&&"undefined"!=typeof n.addClass?" "+n.addClass:"";r+='<a class="modal-btn'+e+'">'+n.text+"</a>",n.eKey&&(i.btnForEKey=t)}):r+='<a class="modal-btn">'+d.ok+"</a>"}t(s).html(r)}else t(s).remove();if("prompt"==n.type&&$(".modal-prompt-input").focus(),n.autoclose){var m=n.buttons||null!=n.buttons?32*t(o).text().length:900;i._modalHide(900>m?900:m)}a.fadeIn(200,function(){null!=n.onShow?n.onShow(i.actions):null}),i._position()},_position:function(){var e,o,a;n.center?(e={top:t(window).height()<t(l).outerHeight()?1:50,left:50,marginTop:t(window).height()<t(l).outerHeight()?0:-t(l).outerHeight()/2,marginLeft:-t(l).outerWidth()/2},o={top:e.top-(n.animate?3:0)+"%",left:e.left+"%","margin-top":e.marginTop,"margin-left":e.marginLeft},a={top:e.top+"%"}):(e={top:t(window).height()<t(l).outerHeight()?1:10,left:50,marginTop:0,marginLeft:-t(l).outerWidth()/2},o={top:e.top-(n.animate?3:0)+"%",left:e.left+"%","margin-top":e.marginTop,"margin-left":e.marginLeft},a={top:e.top+"%"}),t(l).css(o).stop(!0,!0).animate(a,"fast")},_modalBtn:function(o){var l=!1,s=n.type,d=o.index(),c=n.buttons[d];if(t.inArray(s,["alert","confirm","prompt"])>-1)e=l=1==d?!0:!1,"prompt"==s&&(e=l=l&&a.find("input.modal-prompt-input").size()>0!=0?a.find("input.modal-prompt-input").val():!1),i._modalHide();else{if(o.hasClass("btn-disabled"))return!1;e=l=c&&c.val?c.val:!0,(!c.onClick||c.onClick(t.extend({val:l,bObj:o,bOpts:c},i.actions)))&&i._modalHide()}e=l},actions:{html:a,close:function(){i._modalHide()},getModal:function(){return a},getBox:function(){return a.find(n._classes.box)},getInner:function(){return a.find(n._classes.boxInner)},getTitle:function(){return a.find(n._classes.title)},getContet:function(){return a.find(n._classes.content)},getButtons:function(){return a.find(n._classes.buttons).find("a")},setTitle:function(t){return a.find(n._classes.title+" h3").html(t),a.find(n._classes.title+" h3").size()>0},setContent:function(t){return a.find(n._classes.content).html(t),a.find(n._classes.content).size()>0}}};return i.init(),i.actions}}(jQuery);
+
+//Check field job category FRK 20201015
+$("#jobGbCd").change(function() {
+	  var selectedItem = $(this).val();
+	  const emptyString = " ";
+	  const emptyString2 = "";
+	  var dt = new Date();
+	  var emptyStringMonth = dt.getMonth() + 1;
+	  var emptyStringYear = dt.getFullYear();
+	  var emptyStringEmpSts = "2";
+	  var emptyStringMonthlyInc = 0;
+	  //Hide 4 field FRK 20201015
+	  //001 Employe 002 Entreprenuer
+	  if(selectedItem == "001" || selectedItem == "002" ) {
+				$("#company_name").show();
+				$("#working_since").show();
+				$("#employment_status").show();
+				$("#monthly_income").show();
+				$("#jobPlace").val(emptyString2);
+                $("#workStMm").val(emptyString2);
+                $("#workStYyyy").val(emptyString2);
+                $("#lonEmpSts").val(emptyString2);
+                $("#monthInc").val(emptyString2);
+	  } 
+	  //Other 003 Student 004 Housewife 005 Unemployment 999 Other
+	  else {
+				$("#company_name").hide();
+				$("#working_since").hide();
+				$("#employment_status").hide();
+				$("#monthly_income").hide();
+				$("#jobPlace").val(emptyString);
+                $("#workStMm").val(emptyStringMonth);
+                $("#workStYyyy").val(emptyStringYear);
+                $("#lonEmpSts").val(emptyStringEmpSts);
+                $("#monthInc").val(emptyStringMonthlyInc);
+	  }
+});
+
+//20200224 JKCHO added for Retail Loan
+function commit(){
+	if(state) { return; }
+	var date = new Date();
+	var fullYear = date.getFullYear();
+	var checkBox = document.getElementById("agrmYn");
+	var agrmYn;
+	var custNm = $("#custNm").val();
+	var eKtpNum = $("#eKtpNum").val();
+	var lenEktp = eKtpNum.length;
+	var mbphNo = $("#mbphNo").val();
+	var emadr = $("#emadr").val();
+	var lonUseCd = $("#lonUseCd").val();
+	var pay = $("#rqusAmt").val(); 
+	var rqusAmt = Number(pay.replace(/[^0-9\.]+/g,""));
+	
+	var lonTr = $("#lonTr").val();
+	var crcdCnt = $("#crcdCnt").val();
+	var area = $("#area").val();
+	var jobGbCd = $("#jobGbCd").val();
+	var jobPlace = $("#jobPlace").val();
+	var workStMm = $("#workStMm").val().trim();
+	var workStYyyy = $("#workStYyyy").val().trim();
+	var agtCd = $("#agtCd").val();
+	var checkToday = workStMm + "/" + workStYyyy;
+	var dS = checkToday.split("/");
+    var d1 = new Date(dS[1], (+dS[0] - 1));
+    var lonEmpSts = $("#lonEmpSts").val();
+    var inc = $("#monthInc").val();
+    var monthInc = Number(inc.replace(/[^0-9\.]+/g,""));
+    var path1 = $("#path1").val();
+    var memo = $("#memo").val();
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	var msg1 = "Thank you for you loan application. Your registration ID is ";
+//    var msg1 = " Your registration ID is ";
+	var msg2 = " with Agent Code ";
+	var msg;
+	var isAgtCd;
+	
+	try {
+		
+		if (checkBox.checked == true){
+			agrmYn='Y';
+		} else {
+			alert_dialog($("#msg_alert").val(), $("#msg_Term").val(), "agrmYn");
+			return;
+		}
+		if (!custNm || !/^[a-zA-Z ]*$/.test(custNm)) {
+			alert_dialog($("#msg_alert").val(), $("#msg_CusNm").val(), "custNm");
+			return;
+		}
+		if (!eKtpNum || !/^[0-9]+$/.test(eKtpNum)) {
+			alert_dialog($("#msg_alert").val(), $("#msg_Ektp").val(), "eKtpNum");
+			return;
+		}
+		if (lenEktp != 16) {
+			alert_dialog($("#msg_alert").val(), $("#msg_EktpLen").val(), "eKtpNum");
+			return;
+		}
+		if (mbphNo.slice(0,2) == "08") {
+			if (mbphNo.length <= 9 || mbphNo.length >= 14){
+				alert_dialog($("#msg_alert").val(), $("#msg_NoPhone").val(), "mbphNo");
+				return;
+			}
+			mbphNo = $("#mbphNo").val();
+		}
+		else if(mbphNo.slice(0,3) == "628") {
+			if (mbphNo.length <= 10 || mbphNo.length >= 15){
+				alert_dialog($("#msg_alert").val(), $("#msg_NoPhone").val(), "mbphNo");
+				return;
+			}
+			mbphNo = $("#mbphNo").val();
+		} else {
+			alert_dialog($("#msg_alert").val(), $("#msg_NoPhone").val(), "mbphNo");
+			return;
+		}
+		if (!mbphNo || !/^[0-9]+$/.test(mbphNo)) {
+			alert_dialog($("#msg_alert").val(), $("#msg_NoPhone").val(), "mbphNo");
+			return;
+		}
+		if (!jobGbCd) {
+			alert_dialog($("#msg_alert").val(), $("#msg_JobGbCd").val(), "jobGbCd");
+			return;
+		}
+		if (!jobPlace) {
+			alert_dialog($("#msg_alert").val(), $("#msg_JobPlace").val(), "jobPlace");
+			return;
+		}
+		if (!emadr || !re.test(emadr)) {
+			alert_dialog($("#msg_alert").val(), $("#msg_Emadr").val(), "emadr");
+			return;
+		}
+		if (!workStMm || workStMm < 1 || workStMm > 12) {
+			alert_dialog($("#msg_alert").val(), $("#msg_WorkStMm").val(), "workStMm");
+			return;
+		}
+		if (!workStYyyy || workStYyyy < 1900 || workStYyyy > fullYear) {
+			alert_dialog($("#msg_alert").val(), $("#msg_WorkStYyyy").val(), "workStYyyy");
+			return;
+		}
+		if (!rqusAmt) {
+			alert_dialog($("#msg_alert").val(), $("#msg_RqusAmt").val(), "rqusAmt");
+			return;
+		}
+		if (rqusAmt > 10000000 && (jobGbCd == '003' || jobGbCd == '004')) {
+			alert_dialog($("#msg_alert").val(), "cannot request more than 10 million", "rqusAmt");
+			return;
+		}
+		if (!lonUseCd) {
+			alert_dialog($("#msg_alert").val(), $("#msg_LonUsCd").val(), "lonUseCd");
+			return;
+		}
+		if (!lonTr) {
+			alert_dialog($("#msg_alert").val(), $("#msg_LonTr").val(), "lonTr");
+			return;
+		}
+		
+		if (!lonEmpSts) {
+            alert_dialog($("#msg_alert").val(), $("#msg_lonEmpSts").val(), "lonEmpSts");
+            return;
+        }
+        if (!monthInc) {
+        	if(jobGbCd == "001" || jobGbCd == "002"){
+        		alert_dialog($("#msg_alert").val(), $("#msg_monthInc").val(), "monthInc");
+                return;
+        	}
+        }
+		
+		if (!area) {
+			alert_dialog($("#msg_alert").val(), $("#msg_Area").val(), "area");
+			return;
+		}
+		if (!agtCd || agtCd == "null"){
+			agtCd = "";
+			path1 = '001';
+			isAgtCd = true;
+		} else {
+			if(agtCd.includes("REF") || agtCd.includes("RRP")){
+				memo = agtCd.slice(3);
+				path1 = '903';
+			} else {
+				if (agtCd.length >= 4 || !/^[0-9]+$/.test(agtCd)){
+				alert_dialog($("#msg_alert").val(), "AgtCd Error");
+				return;
+				} else {
+				agtCd;
+				path1 = '006';
+				}
+			}
+			isAgtCd = false;
+		}
+		if (d1 > date){
+			alert_dialog($("#msg_alert").val(), $("#msg_WorkStMm").val(), "workStMm");
+			return;
+		}
+		if (workStMm.length == 1){
+	        workStMm = "0" + workStMm;
+        }
+		if(!/^[0-9]+$/.test(workStMm.trim())){
+        	alert_dialog($("#msg_alert").val(), $("#msg_WorkStMm").val(), "workStMm");
+            return;
+        }
+
+        if(!/^[0-9]+$/.test(workStYyyy.trim())){
+        	alert_dialog($("#msg_alert").val(), $("#msg_WorkStYyyy").val(), "workStYyyy");
+            return;
+        }
+        state = true;
+	} catch (e) {
+		return;
+	}
+	
+	
+    $.post(ctx+"/intn/loan/reg_commit", {
+		"agrmYn":agrmYn,
+		"custNm":custNm,
+		"eKtpNum":eKtpNum,
+		"mbphNo":mbphNo,
+		"emadr":emadr,
+		"lonUseCd":lonUseCd,
+		"rqusAmt":rqusAmt,
+		"lonTr":lonTr,
+		"crcdCnt":crcdCnt,
+		"area":area,
+		"jobGbCd":jobGbCd,
+		"jobPlace":jobPlace,
+		"workStMm":workStMm,
+		"workStYyyy":workStYyyy,
+		"agtCd":agtCd,
+		"lonEmpSts":lonEmpSts,
+		"monthInc":monthInc,
+		"path1": path1,
+		"memo": memo,
+		"ipAddr": ipAddr
+	}, function(json) {
+		const jsonObj = JSON.parse(json.message);
+		if(json.success){
+			console.log("data LOS>>>>>>>>>>>", json.message);
+			var str = json.jres.res;
+			var unqNo = str.split(" ");
+			if (isAgtCd){
+				msg = msg1 + unqNo[1];
+			} else {
+				msg = msg1 + unqNo[1] + msg2 + agtCd;
+			}
+			modal({
+      		  type: 'success',
+      		  buttons:[{
+      			  text: "OK", //Button Text
+      			  eKey: true, //Enter Keypress
+      			  addClass: 'btn-light-red btn-square', //Button Classes (btn-large | btn-small | btn-green | btn-light-green | btn-purple | btn-orange | btn-pink | btn-turquoise | btn-blue | btn-light-blue | btn-light-red | btn-red | btn-yellow | btn-white | btn-black | btn-rounded | btn-circle | btn-square | btn-disabled)
+      		  }],
+      		  text: msg,
+      		  callback: function(result) {
+      			  location.reload();
+      		  },
+      		  closeClick: false
+      	  });
+		return;
+		}else {
+			state = false;
+//			if(json.message.includes("SEMG00200")){
+//				modal({
+//		      		  type: 'error',
+//		      		  buttons:[{
+//		      			  text: "OK", //Button Text
+//		      			  eKey: true, //Enter Keypress
+//		      			  addClass: 'btn-light-red btn-square', //Button Classes (btn-large | btn-small | btn-green | btn-light-green | btn-purple | btn-orange | btn-pink | btn-turquoise | btn-blue | btn-light-blue | btn-light-red | btn-red | btn-yellow | btn-white | btn-black | btn-rounded | btn-circle | btn-square | btn-disabled)
+//		      		  }],
+//		      		  text: "Data is duplicate. eKTP and Cellphone already exist.",
+//		      		  callback: function(result) {
+//		      			  location.reload();
+//		      		  }
+//		      	  });
+//			}
+//			else {
+//				if(json.message.includes("SEMG00200")){
+//					alert_dialog($("#msg_alert").val(), "Data is duplicate. eKTP and Cellphone already exist.");
+//					return;
+//				}
+//				else {
+//					alert_dialog($("#msg_alert").val(), json.message);
+//					return;
+//				}
+//				console.log("error");
+//			}
+//			alert_dialog($("#msg_alert").val(), jsonObj.output);
+			modal({
+    		  type: 'error',
+    		  buttons:[{
+    			  text: "OK", //Button Text
+    			  eKey: true, //Enter Keypress
+    			  addClass: 'btn-light-red btn-square', //Button Classes (btn-large | btn-small | btn-green | btn-light-green | btn-purple | btn-orange | btn-pink | btn-turquoise | btn-blue | btn-light-blue | btn-light-red | btn-red | btn-yellow | btn-white | btn-black | btn-rounded | btn-circle | btn-square | btn-disabled)
+    		  }],
+    		  text: jsonObj.output,
+    		  callback: function(result) {
+    			  location.reload();
+    		  }
+    	  });
+			return;
+			
+		}
+	}, "json");
+}

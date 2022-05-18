@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)https://m.okbank.co.id/intn/loan/reg?lang=in -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="pc/layout/template-default"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title data-th-text="&#39;OK BANK Indonesia&#39;">OK BANK Indonesia</title>
+    <!--/*-->
+    
+    <meta name="_csrf" content="46ada0a0-83f3-47ef-970b-102d0ac415b3">
+    <meta name="_csrf_header" content="X-XSRF-TOKEN">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, minimum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+    <meta name="apple-mobile-web-app-title" content="OK BANK Indonesia">
+    <title>OK BANK Indonesia</title>
+    <meta name="robots" content="all">
+    <meta name="description" content="OK BANK Indonesia">
+
+    <!-- css -->
+    <link rel="shortcut icon" type="image/x-icon" href="https://m.okbank.co.id/resources/intn/common/images/retailloan/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="https://m.okbank.co.id/resources/intn/common/images/retailloan/favicon_128.ico">
+    <link rel="icon" sizes="16x16" href="https://m.okbank.co.id/resources/intn/common/images/retailloan/favicon-16.png">
+    <link rel="stylesheet" href="./OK BANK Indonesia_files/ui_body.css">
+    <link rel="stylesheet" href="./OK BANK Indonesia_files/common.css">
+    <link rel="stylesheet" href="./OK BANK Indonesia_files/popup.css">
+    <link rel="stylesheet" href="./OK BANK Indonesia_files/retailloan_jquery.modal.css">
+    
+    <!-- js -->  
+    <!--script src="../../../static/pc/js/ui_script.js"></script-->
+    <!--*/-->
+    
+    <script type="text/javascript" src="./OK BANK Indonesia_files/jquery-1.8.1.min.js.download"></script>
+    <script type="text/javascript" src="./OK BANK Indonesia_files/jquery-ui-1.9.0.custom.min.js.download"></script>
+    <script type="text/javascript" src="./OK BANK Indonesia_files/jquery.alphanumeric.pack.js.download"></script>
+    
+    <script type="text/javascript" src="./OK BANK Indonesia_files/style.js.download"></script><meta name="format-detection" content="telephone=no, address=no, email=no">
+    <script type="text/javascript" src="./OK BANK Indonesia_files/ewnFilter.js.download"></script>
+    <script type="text/javascript" src="./OK BANK Indonesia_files/common.js.download"></script>
+    <script type="text/javascript" src="./OK BANK Indonesia_files/header.js.download"></script>
+    <script type="text/javascript" src="./OK BANK Indonesia_files/jquery.currency.js.download"></script>
+    
+    
+    <script>
+    var ctx = ""
+    var ipAddr;    
+    </script>
+    <script>var _LOCALE_ = "in"</script>
+    <script>
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function getIP(json) {
+        ipAddr = json.ip;
+    }
+    $(document).ready(function(){
+        var csrf_token  = "46ada0a0-83f3-47ef-970b-102d0ac415b3";
+        var csrf_header = "X-XSRF-TOKEN";
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader(csrf_header, csrf_token );
+                }
+            }
+        }); 
+    });
+    </script>
+    <script src="./OK BANK Indonesia_files/saved_resource"></script>
+</head>
+
+<body>
+    <!-- wrap -->
+    <div class="main-wrap" style="width:1200px; margin:auto">
+
+        <!-- header -->
+        <div class="header">
+            <div class="content table-lay">
+                <h1><img src="./OK BANK Indonesia_files/logo-header.png" th:src="@{resources/intn/common/images/retailloan/icon/logo-header.png}" alt="OK BANK Indonesia LOGO"></h1>
+            </div>
+            <div class="utilW">
+                <ul class="btnAdd1">
+                <a href="https://www.okbank.co.id/?home">
+                <img src="./OK BANK Indonesia_files/homepage_button.png">
+                </a>
+                </ul>
+                <ul class="btnAdd2">
+                <a href="https://m.okbank.co.id/resources/intn/common/download_en.html">
+                <img src="./OK BANK Indonesia_files/button_download.png">
+                </a>
+                </ul>
+                <ul class="btnAdd3">
+                <a href="https://m.okbank.co.id/">
+                <img src="./OK BANK Indonesia_files/OK_Internet_Banking1.png">
+                </a>
+                </ul>
+                <ul class="lang">
+                    <li class="on" lang="id">
+                        <a href="javascript:location.href=&#39;/intn/loan/reg?lang=in&#39;" id="id_href" style="color: white;">IN</a>
+                    </li>
+                    <!--  <li  lang="ko">
+                        <a href="javascript:location.href='/intn/main?lang=ko'">KO</a>
+                    </li> -->
+                    <li class="on" lang="en" style="border-right:0px">
+                        <a href="javascript:location.href=&#39;/intn/loan/reg?lang=en&#39;" id="en_href" style="color: black;">EN</a>
+                    </li>
+                </ul>
+            </div>
+        </div><!-- //header -->
+        
+    <th:block layout:fragment="content-body">
+        <!-- container -->
+        <div class="container" style="width:1100px; margin:auto">
+
+            <form name="loanFrm" id="loanFrm" method="post" action="https://m.okbank.co.id/intn/loan/reg_commit"> 
+            <input type="hidden" name="loanId" th:value="">
+                <!-- content-wrap -->
+                <div class="content-wrap">
+                    
+                    <div class="content-tit">
+                        <div class="content">
+                            <h3 class="tc-red"><img src="./OK BANK Indonesia_files/ret-main.png" th:src="@{resources/intn/common/images/retailloan/icon/ret-main.png}" alt="OK! Merchant Loan"></h3><!-- 2019-05-07 -->
+                        </div>
+                    </div>
+                    <div class="content-body first">                   
+                        
+                        <div class="content" style="width:1100px; margin:auto">
+                            <div class="loan-info">
+                                <div class="layout-half">
+                                    <div class="content-img layout-half-col1">
+                                        <img src="./OK BANK Indonesia_files/img-store-r.png" th:src="@{/resources/intn/common/images/retailloan/img-store-r.png}" alt="Merchant Loan Online Store image">
+                                    </div>
+                                    <div class="layout-half-col2">
+                                        <h4 class="title">Informasi produk</h4>
+                                        <div class="list-info">
+                                             <dl>
+                                                <dt>Target Konsumen</dt>
+                                                <dd>Karyawan, Pedagang, Ibu Rumah Tangga, Pelajar</dd>
+                                            </dl>
+                                            <dl>
+                                                <dt>Jumlah Pinjaman</dt>
+                                                <dd>Rp3 juta ~ Rp200 Juta</dd>
+                                            </dl>
+                                            <dl>
+                                               <dt>Bunga</dt>
+                                                <dd>0.89% ~ 3.49% (Flat per Bulan)</dd>
+                                            </dl>
+                                            <dl>
+                                                <dt>Periode</dt>
+                                                <dd>6, 12, 18, 24, 30, 36 (Maksimum 60 Bulan)</dd>
+                                            </dl>
+                                            <dl>
+                                                <dt>Biaya</dt>
+                                                <dd>Biaya administrasi 4.0%</dd>
+                                            </dl>
+                                            <dl>
+                                                <dt>Dokumen</dt>
+                                                <dd>eKTP, NPWP, slip gaji ** Dalam hal pedagang, data omset, SIUP, TDP</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div><!-- //layout-half -->
+                            </div>
+                        </div>                      
+                    </div>
+                    <div class="content-body">
+                        <div class="content">
+                            <div class="info-txt2 bor-t-gray bor-b-gray">
+                                <p>Hanya dengan memberikan data omset saja, masalah modal kerja, dana pembelian, dana untuk ekspansi bisnis terselesaikan!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content">
+                            <!-- <div class="step-box col3">
+                                <ul>
+                                    <li class="on"><span class="number-circle">1</span>고객정보확인</li>
+                                    <li><span class="number-circle">2</span>관계인정보</li>
+                                    <li><span class="number-circle">3</span>대출신청정보</li>
+                                </ul>
+                            </div> -->                        
+                            <div class="check-wrap bor-b-gray pad-y-16 bg-gray">    
+                                <div>               
+                                    <input type="checkbox" id="agrmYn">
+                                    <label for="agrmYn"><span>Saya telah membaca syarat pengajuan pinjaman OK Bank, dan setuju.</span></label>
+                                    <span class="hyphen"><button type="button" onclick="layerpopupOpen(&#39;popup1&#39;)">Lihat istilah</button></span>
+                                </div>
+                            </div>
+                            
+                            <div class="template" style="margin-left:5px; margin-right:5px;">
+                                <div class="layout-three">
+                                    <div class="sub-title on">
+                                        <span class="number-circle2">1</span>
+                                        <h4>Verifikasi informasi nasabah*</h4>
+                                    </div>       
+                                    <fieldset class="fieldset">
+                                        <ul class="type-table line-bottom-none">
+                                            <li>
+                                                <dl>
+                                                    <dt><label for="custNm">Nama Sesuai KTP</label></dt>
+                                                    <dd>
+                                                        <input type="text" class="form-input short" style="text-transform: uppercase" name="custNm" id="custNm" placeholder="" maxlength="50">
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                    <dt><label for="eKtpNum">NIK eKTP</label></dt>
+                                                    <dd>
+                                                        <input type="text" class="form-input short" name="eKtpNum" id="eKtpNum" value="" placeholder="" minlength="16" maxlength="16">
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                    <dt><label for="mbphNo">Nomor HP</label></dt>
+                                                    <dd>
+                                                        <input type="tel" class="form-input short" name="mbphNo" id="mbphNo" value="" placeholder="" maxlength="20" fn-numberic="">
+                                                        <span class="input-desc">Tanpa menggunakan "-"</span>
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                    <dt><label>Kota tempat tinggal</label></dt>
+                                                    <dd>
+                                                        <select class="form-select short" name="area" id="area" title="Kota tempat tinggal">
+                                                            <option value="" selected="selected">== Pilih ==</option>
+                                                            <option value="JAKARTA">Jakarta</option>
+                                                            <option value="BOGOR">Bogor</option>
+                                                            <option value="DEPOK">Depok</option>
+                                                            <option value="TANGERANG">Tangerang</option>
+                                                            <option value="BEKASI">Bekasi</option>
+                                                            <option value="BALI">Bali</option>
+                                                            <option value="SURABAYA">Surabaya</option>
+                                                            <option value="LAINNYA">Lainnya</option>
+                                                        </select>
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                        </ul>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            
+                            <div class="template mgn-t-20" style="margin-left:5px; margin-right:5px;">
+                                <div class="layout-three">
+                                    <div class="sub-title on">
+                                        <span class="number-circle2">2</span>
+                                       <h4>Informasi Pengajuan pinjaman*</h4>
+                                    </div>       
+                                    <fieldset class="fieldset">
+                                        <ul class="type-table line-bottom-none">
+                                            <li>
+                                                <dl>
+                                                    <dt><label>Pekerjaan</label></dt>
+                                                    <dd>
+                                                        <select class="form-select short" name="jobGbCd" id="jobGbCd" title="Pekerjaan" th:fn-component="@{/component/select?groCd=C0004}">
+                                                            <option value="" selected="selected">== Pilih ==</option>
+                                                            <option value="001">Karyawan</option>
+                                                            <option value="002">Pengusaha</option>
+                                                            <option value="003">Mahasiswa</option>
+                                                            <option value="004">Ibu rumah tangga</option>
+                                                            <option value="005">Tidak Bekerja</option>
+                                                            <option value="999">Lainnya</option>
+                                                        </select>
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li id="company_name">
+                                                <dl>
+                                                    <dt><label for="jobPlace">Nama <br>Perusahaan<br>atau toko</label></dt>
+                                                    <dd>
+                                                        <input type="text" class="form-input short" name="jobPlace" id="jobPlace" placeholder="" maxlength="50">
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li id="working_since">
+                                                <dl>
+                                                    <dt><label for="workStMm">Mulai bekerja sejak</label></dt>
+                                                    <dd>
+                                                        <input type="tel" class="form-input mm" name="workStMm" id="workStMm" value="" placeholder="MM" minlength="2" maxlength="2">
+                                                        <input type="tel" class="form-input yyyy" name="workStYyyy" id="workStYyyy" value="" placeholder="YYYY" minlength="4" maxlength="4">
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                    <dt><label for="emadr">Alamat Email</label></dt>
+                                                    <dd>
+                                                        <input type="email" class="form-input short" name="emadr" id="emadr" maxlength="100">
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                    <dt><label>Berapa jumlah kartu kredit</label></dt>
+                                                    <dd>
+                                                        <select class="form-select short" name="crcdCnt" id="crcdCnt" title="Berapa jumlah kartu kredit" th:fn-component="@{/component/select?groCd=C0005}">
+                                                            <option value="" selected="selected">== Pilih ==</option>
+                                                            <option value="000">Tidak punya kartu kredit</option>
+                                                            <option value="001">1 kartu credit atau lebih</option>
+                                                        </select>
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                   <dt><label for="rqusAmt">Jumlah Pinjaman</label></dt>
+                                                    <dd>
+                                                        <input type="text" class="form-input short" name="rqusAmt" id="rqusAmt" placeholder="" maxlength="20" fn-money="">
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                    <dt><label for="lonUseCd">Tujuan Pinjaman</label></dt>
+                                                    <dd>
+                                                        <select class="form-select short" name="lonUseCd" id="lonUseCd" title="Tujuan pinjaman selesai" th:fn-component="@{/component/select?groCd=C0001}">
+                                                            <option value="" selected="selected">== Pilih ==</option>
+                                                            <option value="001">Pelunasan Hutang</option>
+                                                            <option value="002">Modal Kerja</option>
+                                                            <option value="003">Kebutuhan Dasar</option>
+                                                            <option value="004">Pengobatan</option>
+                                                            <option value="005">Pendidikan</option>
+                                                            <option value="006">Investasi Rumah</option>
+                                                            <option value="007">Konsumtif</option>
+                                                            <option value="008">Renovasi</option>
+                                                            <option value="009">Keagamaan</option>
+                                                            <option value="010">Pernikahan</option>
+                                                            <option value="011">Tidak terjawab</option>
+                                                            <option value="999">Lainnya</option>
+                                                        </select>
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li>
+                                                <dl>
+                                                    <dt><label>Jangka Waktu</label></dt>
+                                                    <dd>
+                                                        <select class="form-select short" name="lonTr" id="lonTr" title="Jangka waktu selesai" th:fn-component="@{/component/select?groCd=C0002}">
+                                                            <option value="" selected="selected">== Pilih ==</option>
+                                                            <option value="06">6 bulan</option>
+                                                            <option value="12">12 bulan</option>
+                                                            <option value="18">18 bulan</option>
+                                                            <option value="24">24 bulan</option>
+                                                            <option value="30">30 bulan</option>
+                                                            <option value="36">36 bulan</option>
+                                                            <option value="42">42 bulan</option>
+                                                            <option value="48">48 bulan</option>
+                                                            <option value="54">54 bulan</option>
+                                                            <option value="60">60 bulan</option>
+                                                        </select>
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li id="employment_status">
+                                                <dl>
+                                                    <dt><label>Status Bekerja</label></dt>
+                                                    <dd>
+                                                        <select class="form-select short" name="lonEmpSts" id="lonEmpSts">
+                                                            <option value="" selected="selected"></option>
+                                                            <option value="1">Tetap</option>
+                                                            <option value="2">Kontrak</option>
+                                                            <option value="9">Lainnya</option>
+                                                        </select>
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                            <li id="monthly_income">
+                                                <dl>
+                                                    <dt><label>Pendapatan Perbulan(Rp)</label></dt>
+                                                    <dd>
+                                                        <input type="text" class="form-input short" name="monthInc" id="monthInc" placeholder="" maxlength="20" fn-money="">
+                                                    </dd>
+                                                </dl>
+                                            </li>
+                                        </ul>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-body">
+                    <div class="content">
+                        <div class="btn-wrap">
+                                <!-- button class="btn red more" id="retailApply">Ajukan pinjaman</button-->
+                                <a href="javascript:commit();" class="btn red more" id="retailApply">Ajukan pinjaman</a>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- //content-wrap -->    
+            </form>
+            <div style="background-color: #55474a; height: 52px; width: 1100px; margin:0 auto; text-align:left;">
+                <p style="color: white; padding-top: 10px; padding-left: 20px;">OK!Bank registered and supervised by Financial Services Authority (Otoritas Jasa Keuangan) .<br>Copyright (c) 2017 OK!Bank. All Rights Reserved. </p>
+            </div> 
+        </div><!-- //container -->
+        <div id="layerPopAlert" class="layerPopWrap">
+		    <div id="_alert_dialog_" class="popWrap pW03 popPos01" style="border: 2px solid black;">
+		        <h2 class="popTit"></h2>
+		        <!-- popConW -->
+		        <div class="popConW">
+		            <div class="alertCon">
+		                <span class="ico01"></span>
+		                <p id="_alert_dialog_msg_"></p>
+		            </div>
+		            <div class="btnWrapC">
+		                <a href="javascript:void(0);" class="btnB01" id="alertOK">OK</a>
+		            </div>
+		            <!-- <span class="btn"><a href="javascript:close_dialog('layerPopAlert');" class="btnClose"><span>Close</span></a></span> --> 
+		        </div>
+		        <!-- //popConW -->
+		    </div>
+		    <!-- messages -->
+                <input type="hidden" id="msg_Term" value="Harap setujui persyaratan aplikasi pinjaman.">
+                <input type="hidden" id="msg_CusNm" value="Silakan masukkan nama pelanggan Anda.">
+                <input type="hidden" id="msg_Ektp" value="Silakan masukkan Nomor eKTP.">
+                <input type="hidden" id="msg_EktpLen" value="Nomor eKTP yang anda masukan kurang">
+                <input type="hidden" id="msg_NoPhone" value="Silakan masukkan nomor ponsel Anda. ">
+                <input type="hidden" id="msg_JobGbCd" value="Silakan pilih kategori pekerjaan. ">
+                <input type="hidden" id="msg_JobPlace" value="Silakan masukkan nama perusahaan atau nama bisnis Anda. ">
+                <input type="hidden" id="msg_Emadr" value="Silakan masukkan alamat email Anda. ">
+                <input type="hidden" id="msg_WorkStMm" value="Silakan masukkan Bulan Anda. ">
+                <input type="hidden" id="msg_WorkStYyyy" value="Silakan masukkan Tahun Anda. ">
+                <input type="hidden" id="msg_RqusAmt" value="Silakan masukkan jumlah aplikasi pinjaman. ">
+                <input type="hidden" id="msg_LonUsCd" value="Silakan pilih tujuan pinjaman. ">
+                <input type="hidden" id="msg_LonTr" value="Silakan pilih periode pinjaman. ">
+                <input type="hidden" id="msg_Area" value="Silakan pilih kota anda. ">
+                <input type="hidden" id="msg_alert" value="Peringatan ">
+                <input type="hidden" id="msg_info" value="Pemberitahuan ">
+                <input type="hidden" id="msg_success" value="Terima Kasih Atas Pengajuan Pinjaman Anda ">
+                <input type="hidden" id="agtCd" value="null">
+                <input type="hidden" id="path1" value="002">
+                <input type="hidden" id="memo" value="">
+                <input type="hidden" id="msg_lonEmpSts" value="Silahkan pilih status pekerjaan anda ">
+                <input type="hidden" id="msg_monthInc" value="Silahkan masukkan jumlah gaji bulanan anda ">
+                
+		</div>
+    </th:block>
+        <!-- popup1 -->
+        <div class="popup1 popup">
+            <div class="dimRetailLoan"></div>
+            <div class="inner">
+                <div class="popup-header align-r" style="height:50px;">
+                    <button class="close" type="button" onclick="layerpopupClose()">
+                        <img src="./OK BANK Indonesia_files/icon-h-close-dark.png" th:src="@{/resources/intn/common/images/retailloan/icon/icon-h-close-dark.png}" alt="close button">
+                    </button>
+                </div><!-- //popup-header -->
+                <div class="popup-view">
+                    <div class="wrap-require">
+                        <h3>OK BANK Parsyaratan</h3>
+                        <ol class="list---decimal-dot">
+                            <li>1. Pemohon akan mengikuti persyaratan dan ketentuan produk pinjaman (retail loan) PT Bank Oke Indonesia.</li><br>
+                            <li>2. Ketentuan pinjaman, termasuk jumlah pinjaman dan tingkat bunga, dapat berubah sesuai dengan hasil review pinjaman.</li><br>
+                            <li>3. Informasi pemohon yang ditulis oleh pemohon akan dikumpulkan dan diberikan kepada PT Bank Oke Indonesia. PT Bank Oke Indonesia dapat menggunakan untuk kepentingan pinjaman dan memberikannya kepada mitra resmi PT Bank Oke Indonesia.</li><br>
+                            <li>4. Untuk proses pengajuan pinjaman, pemohon harus menyetujui seluruh ketentuan dan persyaratan, agar PT Bank Oke Indonesia dapat menggunakan informasi kredit dan informasi pribadi pemohon sampai dengan proses kredit selesai. Apabila pemohon tidak menyetujui, maka akan ada pembatalan dalam proses persetujuan kredit.</li><br>
+                            <li>5. Berdasarkan informasi yang diberikan pemohon, PT Bank Oke Indonesia akan melakukan review terhadap pengajuan pinjaman tersebut. Pencairan dana pinjaman dapat dilakukan apabila Formulir Aplikasi Pinjaman telah terisi lengkap setelah per setujuan pinjaman.</li><br>
+                            <li>6. Pinjaman akan dikirim ke rekening Bank pemohon (termasuk Bank lain), dan PT Bank Oke Indonesia akan menanggung seluruh biaya yang timbul dalam transfer pinjaman.</li><br>
+                            <li>7. Angsuran pinjaman dibayarkan ke rekening pemohon PT Bank Oke Indonesia atau rekening pinjaman yang telah ditentukan oleh PT Bank Oke Indonesia pada tanggal kontrak (jatuh tempo) yang ditentukan oleh pemohon setiap bulan. Apabila pembayaran angsuran dilakukan setelah batas waktu jatuh tempo akan dianggap pembayaran angsuran tersebut terlambat, dan hal tersebut menjadi tanggung jawab pemohon. Jika terdapat keterlambatan pembayaran angsuran, biaya tunggakan se besar 5% per bulan dari total angsuran per bulan.</li><br>
+                            <li>8. PT Bank Oke Indonesia akan mendebet angsuran dari rekening PT Bank Oke Indonesia yang ditunjuk oleh pemohon pada hari komitmen (jatuh tempo). Namun, jika saldo rekening tidak mencukupi, hanya sebagian dari jumlah yang dapat didebet, maka akibatnya pemohon bertanggung jawab atas seluruh ketentuan keterlambatan.</li><br>
+                            <li>9. Pembayaran angsuran berdasarkan pada jadwal angsuran, jadwal angsuran tersebut sewaktu - waktu dapat berubah berdasarkan hasil review dari PT Bank Oke Indonesia.</li><br>
+                            <li>10. Jika terjadi pelunasan dipercepat sebelum jatuh tempo pertama kali, pembayaran bunga pertama kali yang sudah dibayarkan dan didebet oleh PT Bank Oke Indonesia tidak dapat dikembalikan.</li><br>
+                            <li>11. Dana pencairan pinjaman akan dikirimkan ke rekening pemohon dengan mengurangi biaya administrasi 1% dan biaya provisi 1.5% dari plafond yang disetujui.</li><br>
+                            <li>12. Blokir 1x angsuran untuk digunakan pada angsuran terakhir.</li><br>
+                            <li>13. Jika pelunasan dipercepat, terdapat biaya pinalty sebesar 3 % dari total sisa pokok hutang pinjaman.</li><br>
+                            <li>14. Jika terjadi wanprestasi, pemohon secara sukarela menyerahkan dana pensiun pemohon, asuransi jaminan sosial (BPJS) dan uang pesangon kepada PT Bank Oke Indonesia sebagai pembayaran sisa total hutang pinjaman.</li><br>
+                            <li>15. PT Bank Oke Indonesia wajib memberitahu pemohon terlebih dahulu jika ada perubahan produk dan jasa yang digunakan oleh pemohon.</li><br>
+                            <li>16. Pemohon wajib segera memberitahu kepada PT Bank Oke Indonesia jika terdapat perubahan informasi pribadi.</li> 
+                           </ol>
+                        <p class="fs-26 align-r pad-r-20 mgn-t-30 tc---emperor">Ver.5 (2019.4.15)</p>
+                    </div>
+                </div><!-- //popup-view -->
+                <div class="popup-footer tac bor-t-gray pad-t-20">
+                    <button type="button" class="btn red" onclick="aggrTermYes()">Oke</button>
+                </div><!-- //popup-footer -->
+            </div>
+        </div><!-- //popup1 -->
+    </div><!-- //wrap -->
+    <script type="text/javascript" src="./OK BANK Indonesia_files/retailloan.js.download"></script>
+
+
+</body></html>

@@ -1,0 +1,156 @@
+document.write('<meta name="format-detection" content="telephone=no, address=no, email=no" />');
+
+//layer dim pop height
+function popTopPosition(obj){
+	var wHeight = $(window).height();
+	var contHeight = obj.height();
+
+	if(wHeight <= contHeight){
+		obj.css({
+			'top': '0'
+		});
+	} else {
+		obj.css({
+			'top':(wHeight/2)-(contHeight/2)+'px'
+		});
+	}
+}
+//layer dim pop width
+function popLeftPosition(obj){
+	var wWidth = $(window).width();
+	var contWidth = obj.width();
+
+	if(wWidth <= contWdith){
+		obj.css({
+			'left': '0'
+		});
+	} else {
+		obj.css({
+			'left':(wWidth/2)-(contWidth/2)+'px'
+		});
+	}
+}
+//layer dim pop on click
+function popupBtnClick(e){
+	if(e != undefined) e.preventDefault();
+	var posY = $(window).scrollTop();
+	$('body').addClass('scrollStop');
+	$('body').css('top',-posY);
+}
+
+// GNB mobile Depth2 Width
+function mobileDepth2W(){
+	var dep2LiLength = $('.mobileDepth2 ul').children('li').length;
+	var dep2UlSize = 0;
+	for(var i=0; i < dep2LiLength; i++){
+		dep2UlSize = dep2UlSize + $('.mobileDepth2 ul').children('li').eq(i).width();
+	}
+	$('.mobileDepth2 ul').width(dep2UlSize + 20);
+}
+
+
+$(document).ready(function(){
+	$("#subLogo").show();
+	
+	// GNB pc util user
+	$('.userW .btnArrow').click(function(e){
+		e.preventDefault();
+		$('.userSub').slideToggle(200);
+		$(this).toggleClass('on');
+	});
+
+	// GNB mobile menu bar
+	$('.btnBankingM').click(function(e){
+		e.preventDefault();
+		$(this).toggleClass('on');
+		$('.gnb > ul').slideToggle(200);
+	});
+	$('.btnUtilM').click(function(e){
+		e.preventDefault();
+		$(this).toggleClass('on');
+		$('.utilW .utility').slideToggle(200);
+	});
+
+	// GNB mobile menu button
+	$('.btnMenuMobile').click(function(e){
+		e.preventDefault();
+		$('.mobileWrap').animate({right : 0}, 300);
+		$('.dim').css('z-index', '99').show();
+		popupBtnClick(e);
+	});
+	// GNB mobile menu close
+	$('header').next('.dim').click(function(e){
+		if($(".mobileWrap").css("right") == "0px"){
+			console.log("Side menu opened");
+				
+			e.preventDefault();
+			$('.mobileWrap').animate({right : '-300'}, 300);
+			$('.dim').hide();
+			var positionTop = Math.abs(parseInt($('body').css('top')));
+			$('body').removeClass('scrollStop');
+			$('body').css('top','0');
+			$(window).scrollTop(positionTop);
+		}
+	});
+
+	// GNB hover
+	$('.gnb > ul > li').hover(function(){
+		$('.gnb > ul > li ul').hide();
+		$(this).children('ul').show();
+		if($('header').hasClass('mainHead')) {
+			$('.mainHead .gnb').addClass('on');
+		}
+	}, function(){
+		$('.gnb > ul > li ul').hide();
+		$('.gnb > ul').find('li.on').children('ul').show();
+		if($('header').hasClass('mainHead')) {
+			$('.mainHead .gnb').removeClass('on');
+		}
+	});
+	
+	// GNB if
+	if($(window).width() < 768){
+		mobileDepth2W();
+		if($(".mobileDepth2>ul>li").length > 0){
+			$(".fadeRight").show();
+		}
+		
+		$(document).on("focus", "#_j_username, #_j_password, #_j_username_otp, #_j_password_otp", function(){
+			$(this).prev().css("display", "none");
+		});
+		$(document).on("blur", "#_j_username, #_j_password, #_j_username_otp, #_j_password_otp", function(){
+			if($(this).val() == ""){
+				$(this).prev().css("display", "inline-block");
+			}
+		});
+		$(document).on("click", "#_j_password_otp", function(){
+			$(this).prev().css("display", "none");
+		});
+		
+	}
+
+	//faqList
+	$('.faqList li a').on('click', function(){
+		$('.faqList li').removeClass('on');
+		$(this).parent().addClass('on');
+	});
+	
+	$('.tabCon').hide();
+	$('.tabCon:first').show();
+
+//@@ PHW 주석처리
+//	$(window).resize(function() {
+		// GNB
+//		if($(window).width() < 1024){
+//			if($('.userSub').css('display') == 'none'){
+//				$('.userSub').show();
+//			}
+//
+//			mobileDepth2W();
+//		} else {
+//			$('.userSub').hide();
+//			$("#_j_username, #_j_password, #_j_username_otp, #_j_password_otp").css("display", "inline-block");
+//		}
+//	});
+
+});

@@ -1,0 +1,141 @@
+$(function () {
+    // 20191126 JKCHO moved
+	// 20191104 JKCHO check browser chrome and firefox only
+	// Firefox 1.0+
+	//var isFirefox = typeof InstallTrigger !== 'undefined';
+	// Chrome 1 - 71
+	//var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+
+	//if (!isChrome 
+	//	    && !isFirefox) {
+
+			//ver_guide_popup();
+	//}else {
+		// Chrome or Firefox are ok!
+	//}
+	
+	$(".dim").hide();
+	
+	$('#loginPopupForm #_j_password').live('keyup', function(e) {
+		if(e.keyCode == 13) {
+			requestPopupLogin();
+		}
+	});
+	$("#openLoginPopupBtn").click(function() {
+		if($("#isLoginPage") && $("#isLoginPage").val() == "true") {
+			$("#_j_username").focus();
+		}else {
+			login_popup();
+		}
+	});
+	
+	$("#container .location ul li a").css({cursor: "default"});
+});
+
+// 20191126 JKCHO moved
+//function ver_guide_popup() {
+	//return window.open("/intn/login/browser_info", "_blank", "width=700, height=360, left=350, top=200, resizable=1");
+//}
+
+function openVirtualKeyboard() {
+	$("#_j_password").click();
+}
+
+/* 가상키보드 Start */
+function getDomainInfo(){
+	return 3;
+}
+
+function requestPopupLogin() {
+	if(!$('#_j_username').val()) {
+		alert_dialog("Login", $("#alert_userid").val(), "_j_username");
+		return;
+	}
+	
+	if(!$('#_j_password').val()) {
+		alert_dialog("Login", $("#alert_password").val(), "_j_password");
+		return;
+	}
+
+//	$("#j_password").val(nFilterEncrypted());
+	$("#j_password").val($("#_j_password").val());
+	$("#j_username").val($("#_j_username").val());
+	$("#otpYn").val("N");
+	blockOn("loginPopupForm");
+	$("#loginPopupForm").submit();
+}
+
+function requestOtpLogin() {
+	if(!$('#_j_username_otp').val()) {
+		alert_dialog("Login", $("#alert_userid").val(), "_j_username_otp");
+		return;
+	}
+	
+	if(!$('#_j_password_otp').val()) {
+		alert_dialog("Login",  $("#alert_respon").val(), "_j_password_otp");
+		return;
+	}
+		
+	$("#j_password").val(nFilterEncrypted());
+	$("#j_username").val($("#_j_username_otp").val());
+	$("#otpYn").val("Y");
+	blockOn("loginPopupForm");
+	$("#loginPopupForm").submit();
+}
+
+function resetPopupLogin() {
+	$("#loginPopupForm")[0].reset();
+}
+
+function change_locale(lang) {
+	location.href = "?lang="+lang;
+}
+
+function transaction_transfer() {
+	$("#indexForm").attr("action", ctx+"/intn/transfer/");
+	$("#indexForm").submit();
+}
+
+function login_popup() {
+	$('header').next('.dim').click();
+	
+	var options = {
+		method:'GET',
+		modal:true,
+		width:819,
+		height:'auto',
+		position: { 
+			my: "center center", 
+			at: "center center",
+			of: window
+		},
+		resizable:false,
+		close: function() {
+			nFilterClose();
+		}
+	};
+	var logoutLocation = ctx + "/intn/logout";
+	if ( location.pathname == logoutLocation ) {
+		location.href = ctx + "/intn/login";
+		return ;
+	} 
+	load_dialog(
+		"login_popup", 
+		"/intn/login/popup", 
+		options, 
+		{}, 
+		function(){
+			preventKorean("_j_username");
+			$('#_j_username').alphanumeric({nocaps:false, allow:"_"});
+			$('#_j_password').alphanumeric({nocaps:false});
+			$("#_j_username").focus();
+			
+			nFilterInit(ctx+"/intn/nfilter/encrypt?ipath="+ctx+"/resources/intn/", 
+//					"_j_password&qwerty&0&20&RightBottom",
+				"_j_password_otp&num&0&6",
+				function() {
+				}
+			);
+		}
+	);
+}

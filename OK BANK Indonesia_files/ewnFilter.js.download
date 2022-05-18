@@ -1,0 +1,2290 @@
+/*
+*ver.1.4.4 - 2013.11.06 Amy Jang
+*ver.1.4.3 - 2012.12.06 Lee JunYeong
+*ver.1.4.2 - 2012.12.03 Lee JunYeong
+*ver.1.4.1 - 2012.11.07 Martin Shin
+*/
+var nFilterMinMsg_ko = "[가상키보드]최소 #1자 이상 입력하셔야합니다.";
+var nFilterMinMsg_en = "[Virtual Keyboard]You must enter at least #1 character.";
+var nFilterMinMsg_vn = "[Virtual Keyboard]B?n ph?i nh?p it nh?t #1 ky t?";
+var nFilterMinMsg_ja = "[ソフトウェアキ?ボ?ド]最小#1文字以上、入力して下さい。 ";
+
+var nfGlobalLanguage = "ko";
+var nfPwdObj, nfPwdObjTMP;
+var nfShift, nfShift2, nfCapsLock, nfCapsLock2;
+var nfChangeLow, nfChangeSp, nfChangeHan;
+var nfCloseChar, nfCloseNum;
+var nfEnterChar, nfEnterNum, nfEnterNum2;
+var nfBtnIcon;
+
+var nFilterDisabledColor = "#999999";
+var nFilterUnDisabledColor = "#ffffff";
+var nfALLUnDisabledClassName = "";
+
+function setNFilterDisabledColor( color ){
+	nFilterDisabledColor = color;
+}
+
+function setNFilterUnDisabledColor( color ){
+	nFilterUnDisabledColor = color;
+}
+
+function nFilterALLUnDisabledClassName( className ){
+	nfALLUnDisabledClassName = className;
+}
+
+var nFilterMain, nFilterMainSub;
+
+/** security option **/
+var nFilterOff = 0;
+var nFilterDef = 1;
+var nFilterDefClose = 2;  // 모바일 지원x
+var nFilterDefDirect = 3; //
+var nFilterDefDirBtn = 4; //버튼 사용, 직접입력 사용, 필드 클릭하면 가상키보드 실행
+var nFilterBtn = 5; //버튼만 사용 (직접입력 할 수 없음)
+var nFilterOnlyBtn = 6; //버튼 사용하고 직접입력 할 수 있음(focus 이벤트 될 경우 입력값 리셋)
+var nFilterBtnOnlyDef = 7; //버튼 사용, 직접입력 사용, 한번 가상키보드 실행했으면 필드 클릭하여 가상키보드 실행, 직접입력이었으면 계속 직접입력
+var nFilterBtnDefOnly = 8;
+
+var nFilterDefDirBtn_2 = 400;
+var nFilterJSONData = false;
+
+function nFilterJSON( data ){
+	nFilterJSONData = data;
+}
+
+function setNFilterSecurityMerge( mode ){
+
+	if( mode == "global"){
+		nFilterBtn = 7;
+		nFilterBtnOnlyDef = 5; // 버튼 사용하고 직접입력 사용 할 수 있음 ( 우측 상단에 “직접입력” 아이콘 나타남 )
+	}
+}
+
+var NFILTERSET = 1;
+
+var nFilterTYPE ='l';
+var nFilterLow = 'l';
+var nFilterUp = 'u';
+var nFilterSp = 's';
+var nFilterHanLow = 'h';
+var nFilterHanUp = 'p';
+var nFilterNum = 'n';
+
+var nFBTNChar, nFBTNnum,nFBTNCharImg, nFBTNnumImg;
+var nFTMPEditView, nFTMPEditViewNUM;
+var nFilterImg = "/nfilter/";
+var nFilterImgType = "gif";
+var nFilterPublickey;
+var nFilterKeyboardTYPE ="";
+var nFilterOrientation = 0;
+var nFilterOSInfo = getNFilterOSInfo();
+
+function nFilterLoad( setURL, info, callback )
+{
+
+  	if( !nFilterTypeChack() ){
+  		if( document.getElementById('nFilter_main') ){
+  			document.getElementById('nFilter_document').removeChild( document.getElementById('nFilter_main') );
+  			//return false;
+  		}
+  	}else{
+  		if( document.getElementById('nFilter_local_main') ){
+  			return false;
+  		}
+  	}
+
+	if( !document.getElementById("nFilter_document") ){
+		var el = document.createElement( "div" );
+		el.setAttribute('id', "nFilter_document" );
+		document.body.appendChild( el );
+	}
+
+
+	 var timestamp = (new Date()).getTime();
+	 var sendUrl = setURL + "&postfix=" + timestamp;
+
+  	if( window.ActiveXObject ){
+		 try{
+		   	 xmlhttp = new ActiveXObject( "Msxml2.XMLHTTP" );
+		}catch( e ){
+		    try{
+		   	  xmlhttp = new ActiveXObejct( "Microsoft.XMLHTTP" );
+		    }catch(e2){return null; }
+		}
+	}else if( window.XMLHttpRequest ){
+	  xmlhttp = new XMLHttpRequest();
+	}
+
+	xmlhttp.onreadystatechange=function(){
+	  if (xmlhttp.readyState==1 || xmlhttp.readyState==2 || xmlhttp.readyState==3 ){
+
+		  if( nFloadingEnable ){
+			  if( !document.getElementById('nFilter_loading') ){
+
+			  	document.getElementById("nFilter_document").innerHTML += "<div id='nFilter_loading' " +
+			  			"style='position:absolute;z-index:1000;" +
+			  			"padding: 7.5px 15px;font-size: 15px;" +
+			  			"top:50%;left:50%;margin: -50px 0 0 -70px;background: #ffffff;" +
+			  			"border: 1px solid #8f8f8f;" +
+			  			"background: #949494;" +
+			  			"background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#ffffff));" +
+			  			"background: -moz-linear-gradient(top, #ffffff, #ffffff);" +
+			  			"-webkit-border-radius: 8px;-moz-border-radius: 8px;border-radius: 8px;" +
+			  			"-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;box-shadow: rgba(0,0,0,1) 0 1px 0;'>Secure Keypad..</div>";
+
+			  }else{
+		  		document.getElementById('nFilter_loading').style.display = 'block';
+		  	  }
+		  }
+	  }else if (xmlhttp.readyState==4 && xmlhttp.status==200){
+
+		if( nFloadingEnable ) document.getElementById('nFilter_loading').style.display = 'none';
+
+		var  val = xmlhttp.responseText;
+		document.getElementById("nFilter_document").innerHTML += val;
+
+	  	nFilterMain = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_main');
+		nFilterSet( info );
+	  }
+
+  	  if(callback) {
+		  callback();
+	  }
+
+	};
+	
+	var token  = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	xmlhttp.open("POST", sendUrl  ,true);
+	xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xmlhttp.setRequestHeader(header, token);
+	xmlhttp.setRequestHeader("Content-Type", "text/xml");
+	xmlhttp.send();
+}
+
+function nFilterJSONLoad( sendURL, jsonString, param, info )
+{
+	var JSONString = jsonString;
+	/*
+	var JSONString ={"nFilterEncRequest":
+		{"ipath":"/OpenWebNFilter/","itype":"png","device":"mobile"},
+	};
+	 */
+	var asJSON = JSON.stringify(JSONString);
+
+  	if( window.ActiveXObject ){
+		 try{
+		   	 xmlhttp = new ActiveXObject( "Msxml2.XMLHTTP" );
+		}catch( e ){
+		    try{
+		   	  xmlhttp = new ActiveXObejct( "Microsoft.XMLHTTP" );
+		    }catch(e2){return null; }
+		}
+	}else if( window.XMLHttpRequest ){
+	  xmlhttp = new XMLHttpRequest();
+	}
+
+	xmlhttp.onreadystatechange=function(){
+	  if (xmlhttp.readyState==1 || xmlhttp.readyState==2 || xmlhttp.readyState==3 ){
+	  }else if (xmlhttp.readyState==4 && xmlhttp.status==200 ){
+		var obj = eval("("+xmlhttp.responseText+")");
+		var val = obj.nFilterEncResponse.nFilterEnc.ui;
+		document.getElementById("nFilter_document").innerHTML += val;
+	  	nFilterMain = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_main');
+		nFilterSet( info );
+	  }
+	};
+
+	var token  = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	xmlhttp.open("POST", sendURL  ,true);
+	xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xmlhttp.setRequestHeader(header, token);
+	xmlhttp.send( param + "="+asJSON );
+
+}
+
+function nFilterImageType( type ){
+	nFilterImgType = type;
+}
+
+function setNFilterImageType( type ){
+	nFilterImgType = type;
+}
+
+var nFloadingEnable = true;
+function setNFilterLoadingEnabled( loading ){
+	nFloadingEnable = loading;
+}
+
+function nFilterCSLoad( setURL, encData )
+{
+  	if( window.ActiveXObject ){
+		 try{
+		   	 csXmlhttp = new ActiveXObject( "Msxml2.XMLHTTP" );
+		}catch( e ){
+		    try{
+		    	csXmlhttp = new ActiveXObejct( "Microsoft.XMLHTTP" );
+		    }catch(e2){return null; }
+		}
+	}else if( window.XMLHttpRequest ){
+		csXmlhttp = new XMLHttpRequest();
+	}
+
+  	csXmlhttp.onreadystatechange=function(){
+	  if (csXmlhttp.readyState==1 || csXmlhttp.readyState==2 || csXmlhttp.readyState==3 ){
+	  }else if (csXmlhttp.readyState==4 && csXmlhttp.status==200){
+		location.href = nfCSReturnURL + "?encdata="+csXmlhttp.responseText;
+	  }
+	};
+
+	var token  = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	csXmlhttp.open("POST", setURL  ,true);
+	csXmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	csXmlhttp.setRequestHeader(header, token);
+	csXmlhttp.send("encData=" + encData);
+
+}
+
+function nFilterTypeChack(){
+	if( nFilterPublickey==""||nFilterPublickey==undefined){
+		nFilterKeyboardTYPE = "";
+		return false;
+	}
+	nFilterKeyboardTYPE = "_local";
+	return true;
+}
+
+function nFilterImgPath( setURL ){
+	var idAry = setURL.split('?');
+
+	for( var j = 0; j < idAry.length; j++){
+		var keyAry = idAry[j].split('&');
+		var valueAry;
+
+		for( var i = 0; i < keyAry.length; i++){
+			valueAry = keyAry[i].split('=');
+			if( valueAry[0] == "ipath"){
+				nFilterImg = valueAry[1]+"nfilter/";
+			}else if( valueAry[0] == "pk"){
+				nFilterTagRemove();
+				nFilterPublickey = valueAry[1];
+			}
+		}
+	}
+	return true;
+}
+
+function nFilterTagRemove(){
+	var main = document.getElementById("nFilter_local_main");
+	var main_bg = document.getElementById("nFilter_local_bg");
+	if( main ){
+		document.getElementById("nFilter_document").removeChild(main);
+		document.getElementById("nFilter_document").removeChild(main_bg);
+	}
+}
+
+var nfBackgroundabled = true;
+function nFilterCertInit(  e, setURL, info  ){
+	nfBackgroundabled = false;
+	nFilterAutoInit( e, setURL, info );
+}
+
+var nFilterAuto = undefined;
+function nFilterAutoInit( e, setURL, info ){
+
+	if( nfGetDomainInfo == "" || nfGetDomainInfo == undefined ){
+		if( typeof getDomainInfo == "function" ){
+			NFILTERSET = getDomainInfo("nFilterOption");
+		}else{
+			if( typeof alertDialog == "function" ){
+				alertDialog( "보안옵션이 적용되지 않았습니다." );
+			}else{
+				alert( "보안옵션이 적용되지 않았습니다.");
+			}
+		}
+	}else{
+		NFILTERSET = getNFilterDomainInfo();
+	}
+
+	if( NFILTERSET == nFilterOff ) return false;
+
+	nFilterPublickey = undefined;
+	if( !e.getAttribute("nfilter") ){
+		nFilterReload( e, setURL, info  );
+	}else{
+		if( !document.getElementById("tmp_"+e.id) ){
+			nFilterReload( e, setURL, info  );
+			return false;
+		}
+		nFilterShow(e);
+	}
+	return true;
+}
+
+function nFilterReload( e, setURL, info  ){
+
+	if( NFILTERSET == nFilterOff ) return false;
+
+	var img = nFilterImgPath( setURL );
+	var load = jsAllLoad();
+	nFilterLoad( setURL, info );
+	nFilterAuto = e;
+}
+
+var nfGetDomainInfo = "";
+function nFilterCustomDomainInfo( code ){
+	nfGetDomainInfo = code;
+}
+
+function getNFilterDomainInfo(){
+	if( nfGetDomainInfo == "kdb" ){
+		return getKDBNFilterDomainInfo();
+	}else if( nfGetDomainInfo == "kdb_re" ){
+		return getKDBRENFilterDomainInfo();
+	}
+}
+
+function getKDBRENFilterDomainInfo() {
+
+    if(getNFilterBrowerInfo() == "IE"){
+
+        return 6;
+
+    }else{
+        return 8;
+    }
+}
+
+function getNFilterWinOS()
+{
+    var os = navigator.platform;
+    var win = os.indexOf('Win');
+    if (win == -1)
+        return false;
+    else
+        return true;
+}
+
+function nFilterInit( setURL, info, callback ){
+
+	if( nfGetDomainInfo == "" || nfGetDomainInfo == undefined ){
+		if( typeof getDomainInfo == "function" ){
+			NFILTERSET = getDomainInfo("nFilterOption");
+		}else{
+
+			if( typeof alertDialog == "function" ){
+				alertDialog( "보안옵션이 적용되지 않았습니다." );
+			}else{
+				alert( "보안옵션이 적용되지 않았습니다.");
+			}
+		}
+	}else{
+		NFILTERSET = getNFilterDomainInfo();
+	}
+
+	if( NFILTERSET == nFilterOff ) return false;
+
+	nFilterImgPath( setURL );
+	var load = jsAllLoad();
+	nFilterLoad( setURL, info, callback );
+}
+
+function nFilterMobileInit( setURL, info ){
+	nFilterDevice( "mobile" );
+	nFilterInit( setURL + "&device=mobile", info );
+}
+
+function nFilterLocalInit( ipath ){
+	if( ipath != "" && ipath != undefined ){
+		nFilterImg = ipath+"nfilter/";
+	}
+
+}
+
+function jsAllLoad(){
+	if( !document.getElementById('nFilter_main')
+			&& !document.getElementById('nFilter_local_main') ){
+		var a = jsload( nFilterImg+'js/prng4.js' );
+		var c = jsload( nFilterImg+'js/rng.js' );
+		var b = jsload( nFilterImg+'js/jsbn.js' );
+		var d = jsload( nFilterImg+'js/rsa.js' );
+	}
+
+	return true;
+}
+
+function jsload(src){
+   var script = document.createElement('script');
+   script.type = 'text/javascript';
+   script.src = src;
+
+   var ary = document.getElementsByTagName('script');
+   for( var i = 0; i < ary.length; i++ ){
+   	try {
+	   var vAry = ary[i].src.split('/');
+	   var cAry = src.split('/');
+	   if( vAry[ vAry.length-1 ] == cAry[ cAry.length-1 ] ) return false;
+	}catch(e) {
+	}
+   }
+   document.getElementsByTagName('head')[0].appendChild(script);
+   return true;
+}
+
+var nFilterDeviceMode = "";
+function nFilterDevice( mode ){
+	nFilterDeviceMode = "_" + mode;
+}
+
+function nFilterSet( info ){
+
+	if( info == undefined ) return false;
+
+	var idAry = info.split('|');
+
+	for( var i = 0; i < idAry.length; i++ ){
+		var keyAry = idAry[i].split('&');
+		var obj = document.getElementById(keyAry[0]);
+		if( !document.getElementById( 'tmp_'+ keyAry[0] ) ){
+			var e = nFilterCreateElement( keyAry[0], 'tmp_', 'input', 'hidden' );
+			obj.setAttribute("nfilter", "off");
+			obj.setAttribute("mode", keyAry[1]);
+
+			if( keyAry[2] ) obj.setAttribute("minlength", keyAry[2]); //최소 입력값
+			if( keyAry[3] ) obj.maxlength = keyAry[3]; //최소 입력값
+			if( keyAry[4] ) obj.setAttribute("location", keyAry[4]); //location 속성이 있을 경우
+
+		  	if( nFilterTypeChack() ){
+		  		obj.setAttribute("keyboardtype", "local");
+		  	}
+
+		  	obj.onclick = function(){ nFilterShow( this ); };
+
+		  	if(NFILTERSET == nFilterDefDirect ||
+		  			NFILTERSET == nFilterDefDirBtn ||
+		  				NFILTERSET == nFilterBtn ||
+		  				 NFILTERSET == nFilterOnlyBtn ||
+		  				 	NFILTERSET == nFilterBtnOnlyDef ||
+		  				 		NFILTERSET == nFilterBtnDefOnly ){
+		  		if( NFILTERSET == nFilterBtnDefOnly ){
+		  			obj.readOnly = true;
+		  		}else if( NFILTERSET == nFilterBtn ){
+
+		  			if( getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "Firefox" ){
+		  				obj.disabled = true;
+		  			}else{
+		  				obj.readOnly = true;
+		  			}
+
+		  		}
+
+		  		if( nfALLUnDisabledClassName !="" ){
+		  			obj.className += ( obj.className.length == 0 ) ? nfALLUnDisabledClassName : " " + nfALLUnDisabledClassName;
+		  		}else if( getNFilterOSInfo() == "Macintosh" || getNFilterOSInfo() == "Linux" ){
+		  			obj.style.backgroundColor = nFilterDisabledColor;
+		  		}
+		  		setBtnIconEvent( obj );
+		  	}
+
+		}else{
+			document.getElementById( 'tmp_'+ keyAry[0] ).value = nFilterString( keyAry[0] );
+		}
+	}
+
+	if( nFilterAuto ){
+
+		if( NFILTERSET == nFilterBtn || NFILTERSET == nFilterOnlyBtn ){
+			nFilterShow( nFilterAuto , 'btn');
+		}else{
+			nFilterShow( nFilterAuto );
+		}
+		nFilterAuto = undefined;
+	}
+
+}
+
+function setNFilterCommon(obj , info){
+	NFILTERSET = getDomainInfo("nFilterOption");
+	var ary= info.split(',');
+	if(obj!=null && obj!="undefined"){
+		obj = document.getElementById( obj.id );
+
+		for(var i=0;i<ary.length;i++){
+			var tmp = ary[i];
+			var name = tmp.substr( 0,tmp.indexOf('=') );
+			var value = tmp.substr( ary[i].indexOf('=')+1 );
+			obj.setAttribute("nfilter", "off");
+			obj.setAttribute( name, value );
+		}
+
+		if( NFILTERSET != nFilterBtn){
+			if( NFILTERSET == nFilterOnlyBtn ){
+				obj.onclick = function(){ nFilterReSet( obj );	 };
+			}else{
+				obj.onclick = function(){ nFilterShow( this ); };
+			}
+		}
+
+	  	if(NFILTERSET == nFilterDefDirect ||
+	  			NFILTERSET == nFilterDefDirBtn ||
+	  				NFILTERSET == nFilterBtn ||
+	  					NFILTERSET == nFilterOnlyBtn ||
+	  						NFILTERSET == nFilterBtnOnlyDef ){
+	  		if( NFILTERSET == nFilterBtn ){ obj.readOnly = true; }
+	  		setBtnIconEvent( obj );
+	  	}
+
+	  	if( NFILTERSET == nFilterDef ){
+	  		obj.readOnly = true;
+	  	}
+
+	}
+}
+
+var CombineObj = new Array(2);
+var CombineObjLeft;
+var CombineObjLocation;
+function setNFilterAutoFocus( info, location ){
+
+	for( var i = 0; i < CombineObj.length; i++ ){
+		if( CombineObj[i] == null && CombineObj[i] == undefined ){
+			CombineObj[i] = info.split(','); break;
+		}
+	}
+
+}
+
+function setNFilterInit( url ){
+	if( NFILTERSET == nFilterOff ) return false;
+
+	var load = jsAllLoad();
+
+	if( url ){
+		nFilterLoad( url + "?ipath=" + iPath );
+	}else{
+		nFilterLoad( "/NFilter?ipath=" + iPath );
+	}
+}
+
+function setNFilterMobileInit( url ){
+	if( NFILTERSET == nFilterOff ) return false;
+
+	nFilterDevice( "mobile" );
+
+	var load = jsAllLoad();
+
+	if( url ){
+		nFilterLoad( url + "?ipath=" + iPath +"&itype=" + nFilterImgType + "&device=mobile" );
+	}else{
+		nFilterLoad( "/NFilterMobile?ipath=" + iPath +"&itype=" + nFilterImgType + "&device=mobile" );
+	}
+}
+
+var iPath = "";
+function setImgPath( path ){
+	iPath = path;
+	nFilterImg = path + "nfilter/";
+}
+
+var NFilterBtnClassName = "nFilter_btn_st";
+function nFilterBtnClassName(  className ){
+   NFilterBtnClassName = className;
+}
+
+function nFilterImageTagCreate( id ){
+var spanObj = document.createElement( "span" );
+    spanObj.className = NFilterBtnClassName;
+    spanObj.innerHTML = "<input type='button' value='마우스입력' style='vertical-align:middle;' id='"+ id +"' />";
+    return spanObj;
+}
+
+function setBtnIconEvent( obj ){
+	if( NFILTERSET == nFilterDef || NFILTERSET == nFilterDefClose || NFILTERSET == nFilterDefDirect ){
+		return;
+	}
+
+	try{
+		var icon = document.getElementById( obj.id + "_iconkeyboard" );
+
+		if( icon == null || icon == undefined || icon == "" ){
+			document.getElementById( obj.id ).parentNode.insertBefore( nFilterImageTagCreate(  obj.id + "_iconkeyboard" ) , obj.nextSibling);
+			 icon = document.getElementById( obj.id + "_iconkeyboard" );
+		}
+
+		icon.onclick = function(){
+			var id = document.getElementById( icon.id.replace( "_iconkeyboard", "" )  );
+			nFilterShow( id , 'btn');
+		};
+	}catch(e){}
+}
+
+var CSURL = "";
+function setNFilterCSURL( url ){
+	CSURL = url;
+}
+
+var nfCSPublicKey = "";
+function setNFilterCSPublicKey( key ){
+	nfCSPublicKey = key;
+}
+
+var nfCSReturnURL = "";
+function setNFilterCSReturnURL( url ){
+	nfCSReturnURL = url;
+}
+
+var __e;
+var __mode;
+function nFilterShow(e, mode){
+	__e = e;
+	__mode = mode;
+	setTimeout("nFilterShowDelay()", 600);
+}
+
+function nFilterShowDelay(){
+	var e = __e;
+	var mode = __mode;
+	if(typeof nFilterShowBeforePerform == 'function') {
+		nFilterShowBeforePerform();
+	}
+
+
+	if( NFILTERSET == nFilterOff ) return false;
+	nfPwdObj = document.getElementById( e.id );
+	nfPwdObj.blur();
+
+	if( nfALLUnDisabledClassName !="" ){
+		nfPwdObj.className += ( nfPwdObj.className.length == 0 ) ? nfALLUnDisabledClassName : " " + nfALLUnDisabledClassName;
+  	}else 	if( getNFilterOSInfo() == "Macintosh" || getNFilterOSInfo() == "Linux" ){
+		nfPwdObj.style.backgroundColor = nFilterDisabledColor;
+	}
+
+		if( NFILTERSET == nFilterBtn && mode != 'btn'
+			|| NFILTERSET == nFilterOnlyBtn && mode != 'btn' ){
+
+			if(  NFILTERSET == nFilterOnlyBtn && nfPwdObj.getAttribute("nfilter") == "on" ){
+				nFilterReSet();
+				nfPwdObj.setAttribute("nfilter", "off");
+			}
+		return false;
+		}else if( NFILTERSET == nFilterBtnOnlyDef && nfPwdObj.getAttribute("nfilter") == "off" && mode != 'btn'  ){
+			return false;
+		}
+
+	if( !document.getElementById('nFilter'+nFilterKeyboardTYPE+'_char') ) return false;
+	if( !document.getElementById('nFilter'+nFilterKeyboardTYPE+'_num') ) return false;
+
+	document.getElementById('nFilter'+nFilterKeyboardTYPE+'_char').style.display = 'none';
+	document.getElementById('nFilter'+nFilterKeyboardTYPE+'_num').style.display = 'none';
+
+	nfPwdObj.setAttribute("nfilter", "on");
+
+	/** setNFilterCommon 사용할 경우 **/
+	if( !document.getElementById( 'tmp_'+ nfPwdObj.id ) ){
+		nFilterCreateElement( nfPwdObj.id, 'tmp_', 'input', 'hidden' );
+	}
+
+	if( nfPwdObj.getAttribute("keyboardtype") == "local" ){
+		nFilterKeyboardTYPE = "_local";
+		nFilterMain = document.getElementById("nFilter"+nFilterKeyboardTYPE+"_main");
+	}else{
+		nFilterKeyboardTYPE = "";
+		nFilterMain = document.getElementById("nFilter_main");
+	}
+
+	if( !nFilterMain ) return false;
+
+	if( getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "Firefox" ){
+		nfPwdObj.disabled = true;
+	}else{
+		nfPwdObj.readOnly = true;
+	}
+
+	var langs = nfPwdObj.getAttribute("lang");
+	if( langs != undefined || langs != null) nfGlobalLanguage = langs;
+
+
+	var r = setEventNFilter();
+	nfPwdObjTMP = document.getElementById( 'tmp_' + e.id );
+
+	var height =  Math.max( document.body[ "scrollHeight" ], document.documentElement[ "scrollHeight" ], document.body[ "offsetHeight" ] , document.documentElement[ "offsetHeight" ]  );
+	if( nfBackgroundabled || nfBackgroundabled == undefined ){
+		document.getElementById('nFilter'+nFilterKeyboardTYPE+'_bg').style.display = 'block';
+		nFilterMain.style.height = 250 + "px";
+	}else{
+		nFilterMain.style.height = 228 + "px";
+	}
+	
+	document.getElementById('nFilter'+nFilterKeyboardTYPE+'_bg').style.height = height +"px";
+	nFilterMain.style.display = 'block';
+
+	if( nfPwdObj.getAttribute("mode")== "qwerty" ){
+		nFilterMainSub = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_char');
+		nFilterTYPE = nFilterLow;
+	}else{
+		nFilterMainSub = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_num');
+		nFilterTYPE = nFilterNum;
+	}
+
+	nFilterKeyboardControl( true );
+
+	nFilterReSet();
+	nFilterMainSub.style.display = 'block';
+
+	if( parent.window.orientation == 90 || parent.window.orientation == -90 || nFilterOSInfo  == "BlackBerry" ){
+		onorientationchangeStyle();
+	}
+
+	nFilterLocation( nfPwdObj );
+
+	if(getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "IE7" || 
+			getNFilterBrowerInfo() == "Firefox" || getNFilterBrowerInfo() == "Opera"){
+		preScrollTop = document.documentElement.scrollTop;
+	}else{
+		preScrollTop = document.body.scrollTop;
+	}
+	
+	var mainTop = nFilterMain.style.top;
+	var mainHeight = nFilterMain.style.height;
+	
+	var bodyHeight = parseInt(mainTop,10) + parseInt(mainHeight,10) - preScrollTop;
+	var currentHeight = document.documentElement.clientHeight;
+
+	//MSJ FIX
+	var inputRect = nfPwdObj.getBoundingClientRect();
+	var inputWin = nfPwdObj.ownerDocument.defaultView;
+	nFilterMain.style.top = (inputRect.top + inputWin.pageYOffset + 30) + "px";
+	
+	if(currentHeight <= bodyHeight){
+		if(height < (bodyHeight + preScrollTop)){
+			height = bodyHeight + preScrollTop;
+		}
+		document.getElementById('nFilter'+nFilterKeyboardTYPE+'_bg').style.height = height + "px";
+		if(getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "IE7" || 
+				getNFilterBrowerInfo() == "Firefox" || getNFilterBrowerInfo() == "Opera"){
+			document.documentElement.scrollTop = parseInt(mainHeight,10) - (currentHeight - (parseInt(mainTop,10)) );
+		}else{
+			document.body.scrollTop = parseInt(mainHeight,10) - (currentHeight - (parseInt(mainTop,10)) );
+		}
+	}
+	var browserWidth = document.body.offsetWidth;
+	var keypadWidth = document.getElementById(nFilterMainSub.id).offsetWidth;
+	if(browserWidth < keypadWidth){
+		document.getElementById('nFilter'+nFilterKeyboardTYPE+'_bg').style.width = keypadWidth + 10 + "px";
+	}else{
+		document.getElementById('nFilter'+nFilterKeyboardTYPE+'_bg').style.width = "100%";
+	}
+	
+	return true;
+}
+
+parent.onorientationchange = function() {
+	onorientationchangeStyle();
+};
+
+function onorientationchangeStyle(){
+	if ( nFilterDeviceMode != "_mobile" ) return false;
+	if( parent.window.orientation == 90 || parent.window.orientation == -90 || nFilterOSInfo == "BlackBerry" ){
+		if( nfPreview ) nFilterImgClose();
+		nFilterMobileLandLocation();
+		setTimeout(function() {
+			nFilterLocation( nfPwdObj );
+		}, 200);
+
+	}else{
+		nFilterMobilePortrait();
+		setTimeout(function() {
+			nFilterLocation( nfPwdObj );
+		}, 200);
+	}
+}
+
+var nFilterLeftTop = "LeftTop";
+var nFilterLeftMiddle = "LeftMiddle";
+var nFilterRightTop = "RightTop";
+var nFilterRightMiddle = "RightMiddle";
+var nFilterRightBottom = "RightBottom";
+
+function nFilterMobileLandLocation(){
+		nFTMPEditView.style.display = "block";
+		nFTMPEditViewNUM.style.display = "block";
+		parent.scrollTo( 0,  pxSplit( nFilterMain.style.top ) - 25  );
+
+}
+
+function nFilterMobilePortrait(){
+		nFTMPEditView.style.display = "block";	//"none";
+		nFTMPEditViewNUM.style.display = "block";	//"none";
+}
+
+var nfInfoTitle = true;
+function nFilterInfoTitleEnabled( mode ){
+	nfInfoTitle = mode;
+}
+
+if( nFilterOSInfo != "BlackBerry" && nFilterOSInfo != 'iPhone' && nFilterOSInfo != 'iPod' ){
+	var timeout;
+	var lastTap = 0;
+	document.ontouchstart=function(){
+		 var currentTime = new Date().getTime();
+		    var tapLength = currentTime - lastTap;
+		    clearTimeout(timeout);
+		    if (tapLength < 500 && tapLength > 0) {
+		        event.preventDefault();
+		    } else {
+		        timeout = setTimeout(function() {
+		            clearTimeout(timeout);
+		        }, 500);
+		    }
+		    lastTap = currentTime;
+	};
+}
+
+var nFilterTabletWidth = 0;
+function nFilterTabletSize( width ){
+	nFilterTabletWidth = width;
+}
+
+function nFilterLocation( obj , type ){
+
+	if( nFilterTabletWidth != 0 ){
+		 if( window.innerWidth >= 800 ){
+			 nFilterMain.style.width = nFilterTabletWidth +"px";
+			 nFTMPEditView.style.display = "block";	//"none";
+			 nFTMPEditViewNUM.style.display = "block";	//"none";
+		 }
+	}
+
+	if( parent.window.orientation == 90 || parent.window.orientation == -90  ){
+		nFilterMobileLandLocation();
+	}else if( nFilterOSInfo == "BlackBerry" ){
+		nFilterMobileLandLocation();
+	}
+
+	var inputLeft = jsFindoffsetLeft(obj) + pxSplit(obj.style.paddingLeft);
+	var inputTop = jsFindoffsetTop(obj) + nFilterTOPGap;
+	var gap = 25;
+
+	var nowScroll = getNowScroll();
+
+	if( obj.getAttribute("location") ){
+
+		var nFilterWidth = pxSplit(nFilterMainSub.style.width);
+		var nFilterHeight = pxSplit(nFilterMainSub.style.height);
+
+		if( nFilterMainSub.id == 'nFilter'+nFilterKeyboardTYPE+'_char' ){
+			nFilterWidth = nFilterMain.style.width =584; nFilterHeight = nFilterMain.style.height = 275;
+
+		}else{
+			nFilterWidth = nFilterMain.style.width = 202; nFilterHeight =nFilterMain.style.height = 170;
+		}
+
+		var inputWidth = pxSplit(obj.style.width) + pxSplit(obj.style.paddingLeft) ;
+		var inputHeight = pxSplit(obj.style.height);
+
+		var location = obj.getAttribute("location");
+
+		if( location == nFilterLeftTop ){
+
+			nFilterMain.style.left = ( nFilterDeviceMode == "_mobile" ) ? "0px" : inputLeft+"px";
+			nFilterMain.style.top = inputTop - nFilterHeight +"px";
+		}else if( location == nFilterRightMiddle){
+
+			var rightBottomLeft = inputLeft + inputWidth - nFilterWidth;
+			if( rightBottomLeft < 0 ) rightBottomLeft = 10;
+
+			nFilterMain.style.left = rightBottomLeft +"px";
+			nFilterMain.style.top = inputTop+"px";
+		}else if( location == nFilterRightTop ){
+			nFilterMain.style.left = inputLeft + inputWidth - nFilterWidth +"px";
+			nFilterMain.style.top = inputTop - nFilterHeight - gap +"px";
+		}else if( location == nFilterLeftMiddle ){
+			nFilterMain.style.left = inputLeft + inputWidth + gap +"px";
+			nFilterMain.style.top = inputTop+"px";
+		}else if( location == nFilterRightBottom){
+
+			var rightBottomLeft = (inputLeft -nFilterWidth) + inputWidth;
+			if( rightBottomLeft < 0 ) rightBottomLeft = 10;
+
+			nFilterMain.style.left = rightBottomLeft +"px";
+			nFilterMain.style.top = inputTop + inputHeight + gap + "px";
+		}
+	}else if( obj.getAttribute("xlocation") && obj.getAttribute("ylocation")){
+		nFilterMain.style.left = parseInt( obj.getAttribute("xlocation") );
+		nFilterMain.style.top = parseInt(obj.getAttribute("ylocation") );
+	}else if( obj.getAttribute("xlocation") ){
+		nFilterMain.style.left = parseInt( obj.getAttribute("xlocation") );
+		nFilterMain.style.top = jsFindoffsetTop(obj)+ 25 +"px";
+	}else{
+		if( !nFilterIsCombineObj() ){
+				nFilterMain.style.left = ( nFilterDeviceMode == "_mobile" ) ? "2px" : inputLeft+"px";
+		}else{
+			if( CombineObjLocation == "left" ){
+				CombineObjLeft =  jsFindoffsetLeft( document.getElementById( CombineObj[CombineObjIndex][0] ) );
+				CombineObjLeft = ( jsFindoffsetLeft( endInput ) + jsFindoffsetLeft( startInput ) - (382) );
+			}else if( CombineObjLocation == "right" ){
+				CombineObjLeft = ( jsFindoffsetLeft( endInput ) + jsFindoffsetLeft( startInput ) - (382) ) /2;
+			}else{
+				var startInput = document.getElementById( CombineObj[CombineObjIndex][0] );
+				var endInput = document.getElementById( CombineObj[CombineObjIndex][ (CombineObj[CombineObjIndex].length - 1) ] );
+				CombineObjLeft = ( ((382) - jsFindoffsetLeft( startInput ))/2 - ( jsFindoffsetLeft( startInput )/5 ) );
+				nFilterMain.style.left = CombineObjLeft +"px";
+			}
+
+		}
+
+		if( getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "Firefox" || getNFilterBrowerInfo() == "Opera"){
+			nFilterMain.style.top = jsFindoffsetTop(obj)+ gap + "px";
+		}else{
+			nFilterMain.style.top = jsFindoffsetTop(obj)+ gap + nowScroll.Y + "px";
+		}
+
+	}
+	
+	  //Adjust position
+//@@ PHW 주석처리(2)
+	//$(window).scrollTop(0);
+	//popTopPosition($("#nFilter_main"));
+	  $("#nFilter_tmp_num_editview").css("height", "27px");
+	  $("#nFilter_tmp_num_editview").css("lineHeight", "27px");	
+
+}
+
+var nFilterTOPGap = 0;
+function nFilterTopHeight( height ){
+	nFilterTOPGap = height;
+}
+var nFilterSpUse = false;
+var nFilterEngUse = false;
+function nFilterEngSpEnable( nFilterEngSpSet ){
+	nFilterSpUse = nFilterEngSpSet;
+	nFilterEngUse = nFilterEngSpSet;
+}
+function nFilterSpEnable( nFilterSpUseSet ){
+	nFilterSpUse = nFilterSpUseSet;
+}
+function nFilterEngEnable( nFilterEngUseSet ){
+	nFilterSpUse = nFilterEngUseSet;
+}
+
+function pxSplit( str ){
+	var spl = str.split('px');
+	return Number(spl[0]);
+}
+
+function nFilterKeyboardControl( mode ){
+	if( mode ){
+	}
+}
+
+function nFilterReSet( obj ){
+	nfCapsOnOff = false;
+	try{
+		nfCapsLock.src = nfCapsLock2.src = nFilterImg+"nFilter_img/capslock"+ nFilterDeviceMode +"." + nFilterImgType;
+	}catch(e){}
+
+	if( obj != null ){
+		obj.value = '';
+		try{ document.getElementById( 'tmp_' + obj.id ).value = nFilterString( obj.id ); }catch(e){}
+	}else{
+		var nfPwdObjTMP2 = document.getElementById( 'tmp_' + nfPwdObj.id );
+		nfPwdObj.value = '';
+		nFTMPEditViewNUM.value = ''; /* keypad  textBox intial */
+		nfPwdObjTMP2.value = nFilterString( nfPwdObj.id );
+	}
+
+}
+
+function nFilterClose( type ){
+
+	if( type == 'enter' && !min_max_check()  ) return false;
+
+	if( CSURL != "" ){
+		nFilterCSLoad(CSURL, nfCSPublicKey+nFilterEncrypted());
+		return false;
+	}
+
+	if( nFilterTYPE != nFilterNum ){
+		nFilterTYPE = nFilterLow;
+		nFilterKeyChange( nFilterTYPE );
+	}
+	if(  NFILTERSET == nFilterBtnDefOnly ){
+		if( getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "Firefox"  ){
+			nfPwdObj.disabled = false;
+			nfPwdObj.readOnly = true;
+		}else{
+			nfPwdObj.readOnly = true;
+		}
+	}else if( NFILTERSET == nFilterBtn ){
+		if( getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "Firefox"  ){
+			nfPwdObj.disabled = true;
+		}else{
+			nfPwdObj.readOnly = true;
+		}
+	}else if( nFilterDeviceMode == "_mobile" && NFILTERSET == nFilterOnlyBtn ){
+		nfPwdObj.readOnly = false;
+	}else if( nFilterDeviceMode == "_mobile" && NFILTERSET == nFilterBtnOnlyDef && nfPwdObj.getAttribute("nfilter") == "on"
+		|| nFilterDeviceMode == "_mobile" && NFILTERSET == nFilterDefClose
+		|| nFilterDeviceMode == "_mobile" && NFILTERSET == nFilterDefDirect
+		|| nFilterDeviceMode == "_mobile" && NFILTERSET == nFilterDef ){
+		nfPwdObj.readOnly = true;
+		nfPwdObj.disabled = false;
+	}else{
+		if( getNFilterBrowerInfo() == "IE" || getNFilterBrowerInfo() == "Firefox"){
+			nfPwdObj.disabled = false;
+		}
+	}
+
+
+	if( type != 'enter' ){
+		nFilterReSet();
+		if( NFILTERSET != nFilterDefClose  && nFilterDeviceMode == ""){
+			nfPwdObj.focus();
+		}
+		nfPwdObj.setAttribute("nfilter", "off");
+
+  		if( nfALLUnDisabledClassName !="" ){
+  			nfPwdObj.className += ( nfPwdObj.className.length == 0 ) ? nfALLUnDisabledClassName : " " + nfALLUnDisabledClassName;
+  		}else if( getNFilterOSInfo() == "Macintosh" || getNFilterOSInfo() == "Linux" ){
+			nfPwdObj.style.backgroundColor = nFilterUnDisabledColor;
+		}
+	}else{
+  		if( nfALLUnDisabledClassName !="" ){
+  			nfPwdObj.className += ( nfPwdObj.className.length == 0 ) ? nfALLUnDisabledClassName : " " + nfALLUnDisabledClassName;
+  		}else if( getNFilterOSInfo() == "Macintosh" || getNFilterOSInfo() == "Linux" ){
+			nfPwdObj.style.backgroundColor = nFilterDisabledColor;
+		}
+	}
+
+	if( nfPreview ) nFilterImgClose();
+
+	nFilterKeyboardControl( false );
+	nFilterMainSub.style.display = 'none';
+	nFilterMain.style.display = 'none';
+	document.getElementById('nFilter' + nFilterKeyboardTYPE + '_bg').style.display = 'none';
+
+
+
+		nFTMPEditView.value = "";
+		nFTMPEditViewNUM.value = "";
+
+
+	if(typeof nFilterCloseAfterPerform == 'function') {
+		nFilterCloseAfterPerform(type);
+	}
+
+}
+
+function nFilterImgClose(){
+	document.getElementById("nImg").style.display = "none";
+}
+
+function min_max_check(){
+
+	var maxlenth = 1000;
+	var minlength = 2;
+	try{
+		maxlenth = window[nfPwdObj.id].getMaxLength();
+		minlength = window[nfPwdObj.id].getMinLength();
+	}catch(e){
+		maxlenth = nfPwdObj.maxlength;
+		if( maxlenth == null && maxlenth == undefined ){
+			maxlenth = nfPwdObj.getAttribute( 'maxlength' );
+		}
+
+		minlength = nfPwdObj.getAttribute( 'minlength' );
+	}
+
+	if( Number( maxlenth ) < Number( nfPwdObj.value.length ) ){
+		if( nfPwdObj.getAttribute("maxmsg") != undefined ){
+			if( typeof alertDialog == "function" ){
+				alertDialog( nfPwdObj.getAttribute("maxmsg") );
+			}else{
+				alert( nfPwdObj.getAttribute("maxmsg") );
+			}
+		}else{
+		}
+		return false;
+	};
+
+	if( Number( minlength ) > Number( nfPwdObj.value.length ) ){
+		if( nfPwdObj.getAttribute("minmsg") != undefined ){
+			if( typeof alertDialog == "function" ){
+				alertDialog( nfPwdObj.getAttribute("minmsg") );
+			}else{
+				alert( nfPwdObj.getAttribute("minmsg") );
+			}
+		}else{
+
+			if( nfGlobalLanguage == "ko" ) msg = nFilterMinMsg_ko.replace("#1", minlength);
+			else if( nfGlobalLanguage == "en" ) msg = nFilterMinMsg_en.replace("#1", minlength);
+			else if( nfGlobalLanguage == "vn" ) msg = nFilterMinMsg_vn.replace("#1", minlength);
+			else if( nfGlobalLanguage == "ja" ) msg = nFilterMinMsg_ja.replace("#1", minlength);
+			else msg = nFilterMinMsg_en.replace("#1", minlength);
+
+			if( typeof alertDialog == "function" ){
+				alertDialog( msg );
+			}else{
+				alert( msg );
+			}
+		}
+		return false;
+	};
+	return true;
+}
+
+function nFilterIsCombineObj(){
+	if( nFilterFindCombineObjIndex() == -1 ){
+		return false;
+	}
+
+	return true;
+}
+
+var CombineObjIndex;
+function nFilterFindCombineObjIndex(){
+	var index = -1;
+
+	if( CombineObj == null && CombineObje == undefined ) return index;
+
+	for( var i = 0; i < CombineObj.length; i++ ){
+		if( CombineObj[i] != null && CombineObj[i] != undefined ){
+			for( var j = 0; j < CombineObj[i].length; j++ ){
+				if( CombineObj[i][j] ==  nfPwdObj.id ){
+					index = (j);
+					CombineObjIndex = i;
+					break;
+				}
+			}
+		}
+	}
+	return index;
+}
+
+var textHide = "";
+function nFilterTextEnter( value, src ){
+	var maxlenthNUM = 0;
+	try{
+		maxlenthNUM = window[nfPwdObj.id].getMaxLength();
+	}catch(e){
+		maxlenthNUM = nfPwdObj.maxlength;
+		if( maxlenthNUM == null && maxlenthNUM == undefined ){
+			maxlenthNUM = nfPwdObj.getAttribute( 'maxlength' );
+		}
+	}
+
+    var MKD25 = document.getElementById("MKD25");
+    if( MKD25 != undefined && MKD25 != null ){
+       	MKD25.SkipVerify(1);
+    }
+    var findVal = "";
+	if( nfPwdObj.value.length < Number( maxlenthNUM ) ){
+		var star ="";
+		for(var i=0; i<nfPwdObj.value.length; i++){
+			star += "*";
+		}
+		nfPwdObj.value = star;
+		findVal = findDigit(src);
+		nfPwdObj.value += findVal;
+
+		nfPwdObjTMP.value += value;
+
+		if( nfPreview ) nFilterImgInsert(value);
+
+
+			if( nFilterTYPE == nFilterNum ){
+				nFTMPEditViewNUM.value = nfPwdObj.value;
+			}else{
+				nFTMPEditView.value = nfPwdObj.value;
+			}
+
+		if(textHide != null || textHide !="undefined" ){
+		  clearTimeout(textHide);
+		}
+
+		textHide = setTimeout("hideValue()", 1500);
+	}
+
+	if( nfPwdObj.value.length == Number( maxlenthNUM ) ){
+
+		var MKD25 = document.getElementById("MKD25");
+	    if( MKD25 != undefined && MKD25 != null ){
+	       	MKD25.SkipVerify(0);
+	    }
+
+		if( nFilterFindCombineObjIndex() == -1 ){
+			nFilterClose('enter');
+		}else{
+			var index = nFilterFindCombineObjIndex() + 1;
+			if( index != -1 && index < CombineObj[CombineObjIndex].length ){
+				var tObj = document.getElementById( CombineObj[CombineObjIndex][index] );
+				if( tObj.value == 0 ){	nFilterShow( tObj ); }
+			}else{
+				nFilterClose('enter');
+			}
+		}
+
+		return false;
+	}
+
+
+    var MKD25 = document.getElementById("MKD25");
+    if( MKD25 != undefined && MKD25 != null ){
+       	MKD25.SkipVerify(0);
+    }
+	return true;
+}
+
+function hideValue(){
+	var star = "";
+	for(var i=0; i<nfPwdObj.value.length; i++){
+		star += "*";
+	}
+	nfPwdObj.value = star;
+
+
+		if( nFilterTYPE == nFilterNum ){
+			nFTMPEditViewNUM.value = nfPwdObj.value;
+		}else{
+			nFTMPEditView.value = nfPwdObj.value;
+		}
+
+};
+
+function findDigit( param ){
+	 // var inputType = nfPwdObj.getAttribute('type');
+		  var padType = nfPwdObj.getAttribute('mode');
+		  if(padType == "num"){
+			    var tmparr = param.split("/");
+				var fName = tmparr[tmparr.length-1];
+				giftemp = fName.split(".");
+				if ( nFilterDeviceMode == "_mobile" ){
+					gifarr = fName.split("_");
+					var num = gifarr[0].substring(1,2)*1;
+				}else{
+					var num = giftemp[0].substring(1,2)*1;
+				}
+				var keynum = num+1;
+				if(keynum>=10) {
+					keynum-=10;
+				}
+				return keynum;
+		  }else if(padType == "qwerty"){
+			    var tmparr = param.split("/");
+				var fName = tmparr[tmparr.length-1];
+				giftemp = fName.split(".");
+				if ( nFilterDeviceMode == "_mobile" ){
+					gifarr = fName.split("_");
+					var isCap = gifarr[0].substring(0,1);
+					var putText = gifarr[0].substring(1,3);
+				}else{
+					var isCap = giftemp[0].substring(0,1);
+					var putText = giftemp[0].substring(1,3);
+				}
+				var str = "";
+				var strUpArray = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V","B", "N", "M"];
+
+				//대소문자 구분
+				if(isCap == "u"){
+				  if(putText.length == 1){
+					 str = parseInt(putText)+1;
+					 if(str == 10) str=0;
+				  }else if(putText.length == 2){
+					  str = strUpArray[parseInt(putText)-10];
+				  }
+				}else if(isCap == "l"){
+					if(putText.length == 1){
+						 str = parseInt(putText)+1; //or (putText*1)+1
+						 if(str == 10) str=0;
+					  }else if(putText.length == 2){
+						  str = strUpArray[parseInt(putText)-10].toLowerCase();
+					  }
+				}
+				return str;
+		  }
+	}
+
+
+var nfPreview = false;
+function nFilterPreview( value ){
+	nfPreview = value;
+}
+
+function nFilterImgInsert( value ) {
+
+	var imgCheckId = "";
+	if (nFilterDeviceMode == "_mobile") {
+		imgCheckId = document.getElementById( value ).getElementsByTagName("img")[0];
+	}else{
+		imgCheckId = document.getElementById( value );
+	}
+
+	var preurl = ( nFilterDeviceMode == "_mobile" )?  imgCheckId.src : imgCheckId.src.replace( /.gif/g , '_pre.gif' );
+	if( !document.getElementById("nImg") ){
+
+		nImg = document.createElement("img");
+		nImg.setAttribute("id", "nImg");
+		nImg.setAttribute("src", preurl );
+		nImg.style.position = "absolute";
+		nImg.style.left = "148px";
+		nImg.style.top = "10px";
+
+		document.getElementById("nFilter_main").appendChild( nImg );
+	}else{
+
+		nImg.style.display = "";
+		nImg.setAttribute("src", preurl );
+	}
+
+}
+
+var nfCloseMode = "close";
+function nFilterObjSet(){
+
+	if( nfGlobalLanguage == undefined || nfGlobalLanguage == "" ) nfGlobalLanguage = "ko";
+
+	if (nFilterDeviceMode == "_mobile") {
+		nFBTNChar = document.getElementById('nFilter' + nFilterKeyboardTYPE + '_char_content').getElementsByTagName('li');
+		nFBTNCharImg = document.getElementById('nFilter' + nFilterKeyboardTYPE + '_char_content').getElementsByTagName('img');
+
+		nFBTNnum = document.getElementById(	'nFilter' + nFilterKeyboardTYPE + '_num_content').getElementsByTagName('li');
+		nFBTNnumImg = document.getElementById('nFilter' + nFilterKeyboardTYPE + '_num_content').getElementsByTagName('img');
+		nFTMPEditView = document.getElementById('nFilter_tmp_editview');
+		nFTMPEditViewNUM = document.getElementById('nFilter_tmp_num_editview');
+
+	} else {
+		nFBTNChar = document.getElementById('nFilter' + nFilterKeyboardTYPE + '_char_content').getElementsByTagName('img');
+		nFBTNnum = document.getElementById(	'nFilter' + nFilterKeyboardTYPE + '_num_content').getElementsByTagName('img');
+		nFTMPEditView = document.getElementById('nFilter_tmp_editview');
+		nFTMPEditViewNUM = document.getElementById('nFilter_tmp_num_editview');
+	}
+
+	nfShift = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_shift');
+	nfShift2 = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_shift2');
+	nfCapsLock = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_capslock');
+	nfCapsLock2 = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_capslock2');
+
+	if( nFilterEngUse ){
+		nfChangeLow = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_eng_shift');
+		nfChangeLow.style.display = "block";
+	}
+	if( nFilterSpUse ){
+		nfChangeSp = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_sp_shift');
+		nfChangeSp.style.display = "block";
+	}
+
+	nfBackspaceChar = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_char_backspace');
+	nfBackspaceNum = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_num_backspace');
+
+	nfCloseChar = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_char_close');
+	nfCloseNum = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_num_close');
+	if( NFILTERSET == nFilterDefDirect || NFILTERSET == nFilterDefDirBtn ||  NFILTERSET == nFilterBtnOnlyDef ){
+		nfCloseChar.src = nFilterImg+'nFilter_img/close_direct_' + nfGlobalLanguage + '.'+nFilterImgType;
+		nfCloseNum.src = nFilterImg+'nFilter_img/close_direct_' + nfGlobalLanguage + '.'+nFilterImgType;
+		nfCloseMode = "direct_close";
+	}else if( NFILTERSET == nFilterDef || NFILTERSET == nFilterBtn  ){
+
+		if( nFilterFindCombineObjIndex() == -1 ){
+			nfCloseChar.style.display = "none";
+			nfCloseNum.style.display = "none";
+		}else{
+			nfCloseChar.style.display = "block";
+			nfCloseNum.style.display = "block";
+		}
+
+	}
+
+	nfEnterChar = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_char_enter');
+	nfEnterNum = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_num_enter');
+	nfEnterNum2 = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_num_enter_big');
+
+	document.getElementById('nFilter_info_title_char').src = nFilterImg+'nFilter_img/infoTitle_' + nfGlobalLanguage + '.'+nFilterImgType;
+	document.getElementById('nFilter_info_title_num').src = nFilterImg+'nFilter_img/infoTitle_' + nfGlobalLanguage + '.'+nFilterImgType;
+
+	if( nfInfoTitle || nfInfoTitle == undefined ){
+		document.getElementById("nFilter_info_title_char").style.display = "block";
+	}else if( !nfInfoTitle ){
+		document.getElementById("nFilter_info_title_char").style.display = "none";
+	}else{
+		document.getElementById("nFilter_info_title_char").style.display = "block";
+	}
+
+	if( nfInfoTitle || nfInfoTitle == undefined ){
+		document.getElementById("nFilter_info_title_num").style.display = "block";
+	}else if( !nfInfoTitle ){
+		document.getElementById("nFilter_info_title_num").style.display = "none";
+	}else{
+		document.getElementById("nFilter_info_title_num").style.display = "block";
+	}
+
+	if (nFilterDeviceMode == "_mobile") {
+		nfEnterChar.src =  nFilterImg+'nFilter_img/close_' + nfGlobalLanguage + '.'+nFilterImgType;
+		nfEnterNum.src =  nFilterImg+'nFilter_img/close_' + nfGlobalLanguage + '.'+nFilterImgType;
+		nfEnterNum2.src = nFilterImg+'nFilter_img/enter_num_mobile_' + nfGlobalLanguage + '.'+nFilterImgType;
+	}
+}
+
+var audioEffect = document.createElement('audio');
+audioEffect.preload = true;
+
+/*function audioBrowser(){
+    if (audioEffect.addEventListener) {  // all browsers except IE before version 9
+    	audioEffect.addEventListener ("mousedown", audioPlay() , false);
+    	audioEffect.addEventListener ("mouseup", audioPause() , false);
+    }
+    else {
+        if (audioEffect.attachEvent) {   // IE before version 9
+        	audioEffect.attachEvent ("onmousedown", audioPlay());
+        	audioEffect.attachEvent ("onmouseup", audioPause());
+        }
+    }
+}*/
+
+function audioMplay(){
+	audioEffect.addEventListener ("touchstart",  audioPlay() , false);
+}
+
+function audioMpause(){
+	audioEffect.addEventListener ("touchend", audioPause() , false);
+}
+
+function audioPlay(){
+	if(getBrowserName() == "Safari" || getBrowserName() == "IE" ){
+		audioEffect.src = nFilterImg+"sound/nfcharacter.mp3";
+		audioEffect.play();
+	}else{
+		audioEffect.src = nFilterImg+"sound/nfcharacter.wav";
+		audioEffect.play();
+	}
+}
+
+function audioPause(){
+	if(getBrowserName() == "Safari" || getBrowserName() == "IE" ){
+		if (player.paused == false) {
+			player.pause();
+		  }
+	}else{
+		player.pause();
+	}
+}
+
+function loadPlayer(){
+	  var player = document.getElementById('player');
+	  var source = document.getElementById('source');
+	  var embed = document.getElementById('embed');
+
+	  if(getBrowserName() == "IE" || getBrowserName() == "Safari"){
+		  if(player.attachEvent != null){
+			    embed.src = nFilterImg+"sound/nfcharacter.mp3";
+			    player.attachEvent("oncanplay",player.play('nfcharacter.mp3'));
+
+			  } else {
+				player.load();
+				source.src = nFilterImg+"sound/nfcharacter.mp3";
+			    source.type = "audio/mpeg";
+			    player.addEventListener("canplay",player.play('nfcharacter.mp3'),false);
+			  }
+	  }else{
+		  if(player.canPlayType("audio/wav")){
+			    source.src = nFilterImg+"sound/nfcharacter.wav";
+			    source.type = "audio/wav";
+			      player.load();
+				  player.play();
+			  }
+	  }
+
+ }
+
+function getBrowserName(){
+    var browsername = "";
+
+    if(navigator.userAgent.indexOf("Chrome") != -1){     // 아래의 "safari" 를 비교하는 항목보다 우선적으로 비교해야 됨
+         browsername = "Chrome";
+    }else if(navigator.userAgent.indexOf("MSIE") != -1){
+         browsername = "IE";
+    }else if(navigator.userAgent.indexOf("Trident") != -1){
+         browsername = "IE";
+    }else if(navigator.userAgent.indexOf("Firefox") != -1){
+         browsername = "Firefox";
+    }else if(navigator.userAgent.indexOf("Opera") != -1){
+         browsername = "Opera";
+    }else if(navigator.userAgent.indexOf("Safari") != -1){
+         browsername = "Safari";
+    }else{
+         browsername = "Unknown";
+    }
+
+    return browsername;
+}
+
+function setEventNFilter(){
+	nFilterObjSet();
+
+	for( var i = 0; i < nFBTNChar.length; i++ ){
+		try{
+			if( nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_shift' && nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_shift2'
+					&& nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_char_backspace'
+						&& nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_char_enter' && nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_capslock'
+							&& nFBTNChar[i].id != '-'){
+
+				if (nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'iPhone' ||
+						nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'iPod' ||
+						nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'Android') {
+
+					nFBTNChar[i].ontouchstart = function( e ){
+						e.preventDefault();
+						audioMplay();
+					};
+
+					nFBTNChar[i].ontouchend = function(){
+						audioMpause();
+						if( nFilterTYPE == nFilterSp && this.src.indexOf("s33") != -1  ) return;
+						if( nFilterTYPE == nFilterSp && this.src.indexOf("s34") != -1  ) return;
+						if( nFilterTYPE == nFilterSp && this.src.indexOf("s35") != -1  ) return;
+
+						nFilterTextEnter(this.id, this.getElementsByTagName("img")[0].src);
+						if( nfShiftOnOff ){ nfShiftOnOff = false; nFilterShiftClick();}
+
+					};
+
+
+				}else{
+					nFBTNChar[i].onmousedown = function(){
+						loadPlayer();
+					};
+
+                    nFBTNChar[i].onmouseup = function(){
+                	    audioPause();
+						if( nFilterTYPE == nFilterSp && this.src.indexOf("s33") != -1  ) return;
+						if( nFilterTYPE == nFilterSp && this.src.indexOf("s34") != -1  ) return;
+						if( nFilterTYPE == nFilterSp && this.src.indexOf("s35") != -1  ) return;
+
+						if (nFilterDeviceMode == "_mobile"){
+							nFilterTextEnter(this.id, this.getElementsByTagName("img")[0].src);
+						}else{
+							nFilterTextEnter(this.id, this.src);
+						}
+						if( nfShiftOnOff ){ nfShiftOnOff = false; nFilterShiftClick();}
+					};
+				}
+
+
+			}
+		}catch(e){}
+
+	}
+
+	for( var j = 0; j < nFBTNnum.length; j++ ){
+		try{
+			if( nFBTNnum[j].id != 'nFilter'+nFilterKeyboardTYPE+'_num_backspace' && nFBTNnum[j].id != 'nFilter'+nFilterKeyboardTYPE+'_num_enter' && nFBTNnum[j].id != '-'
+				&& nFBTNnum[j].id != 'nFilter'+nFilterKeyboardTYPE+'_num_enter_big' ){
+			//if( nFBTNnum[j].id != '-' && nFBTNnum[j].id != 'nFilter'+nFilterKeyboardTYPE+'_num_backspace' && nFBTNnum[j].id != 'nFilter'+nFilterKeyboardTYPE+'_num_enter'){
+
+				if (nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'iPhone' ||
+						nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'iPod' ||
+						nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'Android') {
+
+					nFBTNnum[j].ontouchstart = function( e ){
+						e.preventDefault();
+						audioMplay();
+					};
+
+					nFBTNnum[j].ontouchend = function(){
+						audioMpause();
+						nFilterTextEnter(this.id, this.getElementsByTagName("img")[0].src);
+					};
+
+				}else{
+					nFBTNnum[j].onmousedown = function(){
+						loadPlayer();
+					};
+
+					nFBTNnum[j].onmouseup = function(){
+						audioPause();
+						if (nFilterDeviceMode == "_mobile"){
+							nFilterTextEnter(this.id, this.getElementsByTagName("img")[0].src);
+						}else{
+							nFilterTextEnter(this.id, this.src);
+						}
+					};
+				}
+
+			}
+		}catch(e){}
+	}
+
+	nFilterFunKeyEvent();
+
+	return true;
+}
+
+function nFilterShiftClick(){
+	if( nFilterTYPE == nFilterSp ) return false;
+
+	if( nFilterTYPE == nFilterLow ){ nFilterKeyChange( nFilterUp ); }
+	else if( nFilterTYPE == nFilterUp ){ nFilterKeyChange( nFilterLow ); }
+	else if( nFilterTYPE == nFilterHanLow ){ nFilterKeyChange( nFilterHanUp ); }
+	else if( nFilterTYPE == nFilterHanUp ){ nFilterKeyChange( nFilterHanLow ); }
+}
+
+var nfCapsOnOff = false;
+var nfShiftOnOff = false;
+function nFilterFunKeyEvent(){
+	nfShift.onmousedown = function(){
+		loadPlayer();
+	};
+	nfShift.onmouseup = function(){
+		audioPause();
+		if( nFilterTYPE == nFilterSp )return false;
+		if( nfCapsOnOff ) return false;
+		nfShiftOnOff = ( nfShiftOnOff )? false : true; nFilterShiftClick();
+		return true;
+	};
+
+	try{
+		nfShift2.onmousedown = function(){
+			loadPlayer();
+		};
+		nfShift2.onmouseup = function(){
+			audioPause();
+			if( nFilterTYPE == nFilterSp )return false;
+			if( nfCapsOnOff ) return false;
+			nfShiftOnOff = ( nfShiftOnOff )? false : true; nFilterShiftClick();
+			return true;
+		};
+	}catch(e){}
+
+	if( nfCapsLock != undefined ){
+		nfCapsLock.onmousedown = function(){
+			loadPlayer();
+		};
+		nfCapsLock.onmouseup = function(){
+			audioPause();
+			if( nFilterTYPE == nFilterSp )return false;
+			if( nfShiftOnOff ) return false;
+
+			nfCapsOnOff = ( nfCapsOnOff )? false : true;
+			nfCapsLock.src = ( nfCapsOnOff )? nFilterImg+"nFilter_img/capslock_o"+nFilterDeviceMode+"."+nFilterImgType : nFilterImg+"nFilter_img/capslock"+nFilterDeviceMode+"."+nFilterImgType;
+			nfCapsLock2.src = ( nfCapsOnOff )? nFilterImg+"nFilter_img/capslock_o"+nFilterDeviceMode+"."+nFilterImgType : nFilterImg+"nFilter_img/capslock"+nFilterDeviceMode+"."+nFilterImgType;
+			nFilterShiftClick();
+
+			return true;
+		};
+	}
+
+	if( nfCapsLock2 != undefined ){
+		nfCapsLock2.onmousedown = function(){
+			loadPlayer();
+		};
+
+		nfCapsLock2.onmouseup = function(){
+			audioPause();
+			if( nFilterTYPE == nFilterSp ) return false;
+			if( nfShiftOnOff ) return false;
+
+			nfCapsOnOff = ( nfCapsOnOff )? false : true;
+			nfCapsLock.src = ( nfCapsOnOff )? nFilterImg+'nFilter_img/capslock_o'+nFilterDeviceMode+'.'+nFilterImgType : nFilterImg+'nFilter_img/capslock'+nFilterDeviceMode+'.'+nFilterImgType;
+			nfCapsLock2.src = ( nfCapsOnOff )? nFilterImg+'nFilter_img/capslock_o'+nFilterDeviceMode+'.'+nFilterImgType : nFilterImg+'nFilter_img/capslock'+nFilterDeviceMode+'.'+nFilterImgType;
+
+			nFilterShiftClick();
+			return true;
+		};
+	}
+	if( nFilterEngUse ){
+		nfChangeLow.onclick = function(){
+			nFilterKeyChange( nFilterLow );
+			nFilterFunKeyChange();
+		};
+	}
+	if( nFilterSpUse ){
+		nfChangeSp.onclick = function(){
+			nFilterKeyChange( nFilterSp );
+			nFilterFunKeyChange();
+		};
+	}
+	nfEnterChar.onmousedown = function(){
+		loadPlayer();
+	};
+	nfEnterChar.onmouseup = function(){
+		 audioPause();
+		 nFilterClose('enter');
+	};
+
+	nfEnterNum.onmousedown = function(){
+		loadPlayer();
+	};
+
+	nfEnterNum.onmouseup = function(){
+		audioPause();
+		nFilterClose('enter');
+	};
+
+	try{
+		nfEnterNum2.onmousedown = function(){
+			loadPlayer();
+		};
+		nfEnterNum2.onmouseup = function(){
+			audioPause();
+			nFilterClose('enter');
+		};
+	}catch(e){}
+
+	if (nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'iPhone' ||
+			nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'iPod' ||
+			nFilterDeviceMode == "_mobile" && nFilterOSInfo == 'Android4') {
+
+		nfBackspaceChar.ontouchstart = function(){
+			audioMplay();
+		};
+
+		nfBackspaceChar.ontouchend = function(){
+			audioMpause();
+			nFilterDelete();
+		};
+	}else{
+		nfBackspaceChar.onmousedown = function(){
+			loadPlayer();
+		};
+
+		nfBackspaceChar.onmouseup = function(){
+			 audioPause();
+			 nFilterDelete();
+		};
+
+	}
+
+	nfBackspaceNum.onmousedown = function(){
+		loadPlayer();
+	};
+	nfBackspaceNum.onmouseup = function(){
+		audioPause();
+		nFilterDelete();
+	};
+
+	nfCloseChar.onmousedown = function(){
+		loadPlayer();
+	};
+	nfCloseChar.onmouseup = function(){
+		audioPause();
+		nFilterClose();
+	};
+
+	nfCloseNum.onmousedown = function(){
+		loadPlayer();
+	};
+	nfCloseNum.onmouseup = function(){
+		audioPause();
+		if( nfCloseMode == "close" && nFilterFindCombineObjIndex() != -1 ){
+			nFilterClose('enter');
+		}else{
+			nFilterClose();
+		}
+	};
+}
+
+function nFilterFunKeyChange(){
+	nfCapsOnOff = false;
+	nfCapsLock.src = nFilterImg+'nFilter_img/capslock.'+nFilterImgType;
+	nfCapsLock2.src = nFilterImg+'nFilter_img/capslock.'+nFilterImgType;
+
+	return false;
+
+	nfChangeLow.src = nFilterImg+'nFilter_img/nfilter_eng_shift.'+nFilterImgType;
+	//nfChangeHan.src = nFilterImg+'nFilter_img/hanchar.gif';
+	nfChangeSp.src = nFilterImg+'nFilter_img/nfilter_sp_shift.'+nFilterImgType;
+
+	switch (nFilterTYPE) {
+	case nFilterLow:
+		nfChangeLow.src = nFilterImg+'nFilter_img/lowerchar_o.'+nFilterImgType;
+		break;
+	case nFilterSp:
+		nfChangeSp.src = nFilterImg+'nFilter_img/specialchar_o.'+nFilterImgType;
+		break;
+
+	}
+}
+
+function nFilterKeyChange( type ){
+	nFilterTYPE = type;
+	if( nFilterTYPE != nFilterNum ){
+		var num = 0;
+
+		if (nFilterDeviceMode == "_mobile") {
+			for( var i = 0; i < nFBTNCharImg.length; i++ ){
+
+				if( nFBTNCharImg[i].id != 'nFilter_shift_img' && nFBTNCharImg[i].id != 'nFilter_char_backspace_img' ){
+					nFBTNCharImg[i].src = nFilterImg+'nFilter_img/'+ nFilterTYPE + num + nFilterDeviceMode + '.'+nFilterImgType;
+					num += 1;
+				}
+			}
+		}else{
+			for( var i = 0; i < nFBTNChar.length; i++ ){
+				if( nFBTNChar[i].id != '-' && nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_shift' && nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_shift2'
+						&& nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_char_backspace' && nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_char_enter'
+						&& nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_capslock' && nFBTNChar[i].id != 'nFilter'+nFilterKeyboardTYPE+'_capslock2'){
+
+					nFBTNChar[i].src = nFilterImg+'nFilter_img/'+ nFilterTYPE + num + '.'+nFilterImgType;
+					num += 1;
+				}
+			}
+
+		}
+
+
+	}
+
+	nfPwdObjTMP.value = nFilterTMPCheck();
+	return false;
+}
+
+function nFilterTYPEChange( type ){
+	var str = "";
+
+	switch (type) {
+	case nFilterHanLow:
+		str = "l";
+		break;
+	case nFilterHanUp:
+		str = "u";
+		break;
+
+	default:
+		str = nFilterTYPE;
+		break;
+	}
+
+
+	return str;
+}
+
+function nFilterTMPCheck(){
+	var v = nfPwdObjTMP.value.substr(nfPwdObjTMP.value.lastIndexOf('=')-1, 1 );
+	if( v != nFilterTYPEChange( nFilterTYPE ) ){
+		var z = nfPwdObjTMP.value.lastIndexOf('=');
+
+		if( z == nfPwdObjTMP.value.length - 1 ){/* = 뒤에 아무것도 없으면 */
+			var j = nFilterSlice3();/*뒤에 3자리 자르기*/
+
+			if( nFilterTMPPreStrCheck() == nFilterTYPEChange( nFilterTYPE ) ){
+				return j;
+			}else{	return j + nFilterString2(); }
+		}else{
+			return nfPwdObjTMP.value + nFilterString2();
+		}
+	}
+	return nfPwdObjTMP.value;
+}
+
+var EXCEPTIONOBJ = null;
+function nFilterConfirm(){
+	var input = document.getElementsByTagName("input");
+	for( var i = 0; i < input.length; i++ ){
+		if( input.item(i).getAttribute('nfilter') != undefined ){
+			var inputObj = input.item(i);
+			if( inputObj.getAttribute("confirm") && inputObj.getAttribute("confirm") != undefined ){
+				if( input.item(i).getAttribute('nfilter') == 'on' ){
+
+					var a = document.getElementById("tmp_" + inputObj.id ).value;
+					var b = document.getElementById("tmp_" + inputObj.getAttribute("confirm") ).value;
+					if( a.slice(inputObj.id.length+2,a.length)
+							!= b.slice(inputObj.getAttribute("confirm").length+2,b.length) ){
+						var a = nFilterDecCheck( inputObj );
+						return false;
+					}else{
+						if( inputObj.getAttribute("curConfirm") ){
+							var curConfirm = document.getElementById( inputObj.getAttribute("curConfirm") );
+							//var v = nFilterDummyClean(inputObj.id);
+							//var y = nFilterDummyClean(inputObj.getAttribute("curConfirm"));
+							var c = document.getElementById("tmp_" + inputObj.id ).value;
+							var d = document.getElementById("tmp_" + inputObj.getAttribute("curConfirm") ).value;
+							if( c.slice(inputObj.id.length+2,c.length)
+									== d.slice(inputObj.getAttribute("curConfirm").length+2,d.length) ){
+								var z = nFilterDecCheck( inputObj,curConfirm );
+								return false;
+							}
+						}
+					}
+
+					EXCEPTIONOBJ = document.getElementById( inputObj.getAttribute("confirm") );
+
+				}else if( input.item(i).getAttribute('nfilter') == 'off' ){
+					if( inputObj.value != document.getElementById( inputObj.getAttribute("confirm") ).value ){
+						var a = nFilterDecCheck( inputObj );
+						return false;
+					}else{
+						if( inputObj.getAttribute("curConfirm") ){
+							var curConfirm = document.getElementById( inputObj.getAttribute("curConfirm") );
+							if( inputObj.value == curConfirm.value ){
+								var z = nFilterDecCheck( inputObj, curConfirm );
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+function nFilterDecCheck( inputObj, curConfirm ){
+	inputObj.value = '';
+	document.getElementById( inputObj.getAttribute("confirm") ).value ="";
+	document.getElementById( 'tmp_' + inputObj.id ).value = nFilterString( inputObj.id );
+	document.getElementById( 'tmp_' + inputObj.getAttribute("confirm") ).value = nFilterString( inputObj.getAttribute("confirm") );
+	try{
+		if( curConfirm == undefined ){
+			if( typeof alertDialog == "function" ){
+				alertDialog( inputObj.getAttribute("confirmMsg") );
+			}else{
+				alert( inputObj.getAttribute("confirmMsg") ) ;
+			}
+		}else{
+			if( typeof alertDialog == "function" ){
+				alertDialog( curConfirm.getAttribute("confirmMsg") );
+			}else{
+				alert( curConfirm.getAttribute("confirmMsg") );
+			}
+		}
+	}catch(err){
+		if( typeof alertDialog == "function" ){
+			alertDialog( err );
+		}else{
+			alert( err );
+		}
+	}
+	return true;
+}
+
+/* 뒤에 3자리 자르기 */
+function nFilterSlice3(){
+	return nfPwdObjTMP.value.slice( 0, (nfPwdObjTMP.value.length - 3));
+}
+
+function nFilterTMPPreStrCheck(){
+	var j = nFilterSlice3(); /*뒤에 3자리 자르기*/
+	var z = j.substr(j.lastIndexOf('=')-1, 1 ); /*인자값 알아내기 l,u,s*/
+	return  z ;
+}
+
+function nFilterDelete(){
+
+	if( nFilterFindCombineObjIndex() == -1 ){
+		if(nfPwdObj.value.length == 0) return false;
+
+		var v = nfPwdObj.value;
+		nfPwdObj.value = v.slice(0,-1);
+		nfPwdObjTMP.value = nFilterTMPDelete();
+
+
+			if( nFilterTYPE == nFilterNum ){
+				nFTMPEditViewNUM.value = nfPwdObj.value;
+			}else{
+				nFTMPEditView.value = nfPwdObj.value;
+			}
+
+
+
+	}else{
+
+		/*if( Number( nfPwdObj.getAttribute( 'minlength' ) ) > Number( nfPwdObj.value.length )
+				&&  Number( nfPwdObj.value.length ) != 0){*/
+		if( Number( nfPwdObj.value.length ) != 0 ){
+			var v = nfPwdObj.value;
+			nfPwdObj.value = v.slice(0,-1);
+			nfPwdObjTMP.value = nFilterTMPDelete();
+		}else{
+			//연속으로 입력할 경우 사용
+			var index = nFilterFindCombineObjIndex() - 1;
+			if( index != -1 ){
+				var tObj = document.getElementById( CombineObj[CombineObjIndex][index] );
+				nFilterShow( tObj );
+			}
+		}
+
+	}
+
+	if( nfPreview ) nFilterImgClose();
+
+	return true;
+}
+
+function nFilterTMPDelete(){
+
+	if( nfPwdObjTMP.value.lastIndexOf('=') == nfPwdObjTMP.value.length - 1 ){
+		var z = nFilterSlice3();
+		nfPwdObjTMP.value = z.slice(0,-1);
+		return nFilterTMPCheck();
+	}else{
+		return nfPwdObjTMP.value.slice(0,-1);
+	}
+
+
+	return '';
+}
+
+function nFilterCreateElement( id, etc, element, type ){
+	var el = document.createElement( element );
+	el.setAttribute('id', etc + id );
+
+	if( type != undefined ){
+		el.setAttribute('type', type );
+		el.setAttribute('value', nFilterString( id ) );
+	} 
+	try {
+		nFilterMain.appendChild( el );
+	} catch ( e ) {
+		//location.reload();
+	}
+	return el;
+}
+
+function nFilterString( id ){
+	return '&'+ id + '?/'+nFilterTYPEChange( nFilterTYPE )+'=';
+}
+
+function nFilterString2(){
+	return '/'+ nFilterTYPEChange( nFilterTYPE ) +'=';
+}
+
+function jsFindoffsetTop(obj){
+	var vTop = 0;
+
+	if(obj.offsetParent){
+		do{
+			vTop += obj.offsetTop;
+			if( obj.scrollTop > 30 ) vTop -= obj.scrollTop;
+		}while(obj = obj.offsetParent);
+	}
+	return vTop;
+}
+
+function jsFindoffsetLeft(obj){
+	var vLeft = 0;
+	if(obj.offsetParent){
+		do{
+			vLeft += obj.offsetLeft;
+		}while(obj = obj.offsetParent);
+	}
+	return vLeft;
+}
+
+function nFilterValidate() {
+	if( NFILTERSET != getDomainInfo("nFilterOption") ){ return false; }
+
+
+
+	return nFilterEncrypted();
+}
+
+function nFilterParentEncrypted(){
+
+	if( document.getElementById("nFilter_main") == undefined ) return false;
+	if( document.getElementById("nFilter_parent_modulus") == undefined ) return false;
+	if( document.getElementById("nFilter_parent_exponent") == undefined ) return false;
+
+	var password = nFilterHiddenValue( true );
+
+	var rsa = new RSAKey();
+	rsa.setPublic(document.getElementById('nFilter_parent_modulus').value, document.getElementById('nFilter_parent_exponent').value);
+
+	var securedPassword ="";
+
+	var maxNum = 100;
+	if( password.length > maxNum ){
+		var length = Number(password.length/maxNum).toFixed(2);
+
+		var _tmp_password = "";
+
+		for( var i = 0; i < length; i++ ){
+			var _substring_password = password.substring( (i*maxNum), (i+1)*maxNum );
+			_tmp_password += rsa.encrypt( _substring_password );
+		}
+		securedPassword = _tmp_password;
+	}else{
+		securedPassword = rsa.encrypt(password);
+	}
+	return nFilterEncrypted( securedPassword );
+}
+
+function nFilterEncrypted( parentPassword ){
+
+	if( document.getElementById("nFilter_main") == undefined ) return false;
+
+	if( nfGetDomainInfo == "" || nfGetDomainInfo == undefined ){
+			if( NFILTERSET != getDomainInfo("nFilterOption") ){ return false; }
+	}else{
+		if( NFILTERSET != getNFilterDomainInfo() ){ return false; }
+	}
+
+	var pwd = "";
+
+	if( parentPassword == undefined ){
+		pwd = nFilterHiddenValue( true );
+		pwd = pwd.replace("/n", "/l"); //gib 하위버전 호환8
+	}else{
+		pwd = parentPassword;
+	}
+
+	var rsa = new RSAKey();
+	rsa.setPublic(document.getElementById('nFilter_modulus').value, document.getElementById('nFilter_exponent').value);
+	var securedPassword ="";
+
+	var maxNum = 100;
+	if( pwd.length > maxNum ){
+		var length = Number(pwd.length/maxNum).toFixed(2);
+
+		var _tmp_password = "";
+
+		for( var i = 0; i < length; i++ ){
+			var _substring_password = pwd.substring( (i*maxNum), (i+1)*maxNum );
+			_tmp_password += rsa.encrypt( _substring_password );
+		}
+		securedPassword = _tmp_password;
+	}else{
+		securedPassword = rsa.encrypt(pwd);
+	}
+
+	if(  document.getElementById("nFilter_secondEncData") != undefined && document.getElementById("nFilter_secondEncData").value != ""  ){
+		securedPassword += "_secondEncData_" + document.getElementById("nFilter_secondEncData").value;
+	}
+
+	return securedPassword;
+
+}
+
+function nFilterLocalEncrypted(){
+	var pwd = nFilterHiddenValue( false );
+	return pwd;
+}
+
+function nFilterHiddenValue( type ){
+
+	var nfObj;
+
+	if( type ){
+		nFilterKeyboardTYPE = "";
+		nfObj = document.getElementById("nFilter_main").getElementsByTagName('input');
+	}else{
+		nFilterKeyboardTYPE = "_local";
+		nfObj = document.getElementById("nFilter_local_main").getElementsByTagName('input');
+	}
+
+	var pwd='';
+	for( var i = 0; i < nfObj.length; i++ ){
+		if( nfObj[i].type == 'hidden' ){
+			if( nfObj[i].id != 'nFilter'+nFilterKeyboardTYPE+'_modulus' && nfObj[i].id != 'nFilter'+nFilterKeyboardTYPE+'_exponent'
+					&&  nfObj[i].id != 'nFilter'+nFilterKeyboardTYPE+'_parent_modulus' && nfObj[i].id != 'nFilter'+nFilterKeyboardTYPE+'_parent_exponent'
+						&& nfObj[i].id !=  'nFilter'+nFilterKeyboardTYPE+'_secondEncData' ){
+
+				if( type ){
+					if( i == 0 ) pwd = "&op?/l=" + NFILTERSET;
+					//server encrypt check;
+					if( EXCEPTIONOBJ != null ){
+						if( "tmp_" + EXCEPTIONOBJ.getAttribute("confirm") != nfObj[i].id ) pwd += document.getElementById( nfObj[i].id ).value;
+					}else{
+						 if( nfObj[i].id != "nFilter_version" ){
+							 pwd += document.getElementById( nfObj[i].id ).value;
+						 }
+					}
+				}else{
+					//local encrypt check;
+					try{
+						var localObj = document.getElementById( nfObj[i].id.slice( 4 ) );
+						if( localObj.getAttribute("nfilter")=="on"&&localObj.getAttribute("keyboardtype")=="local"
+								&&localObj.value!=""&&localObj.value!=undefined ){
+								var exponent = document.getElementById('nFilter'+nFilterKeyboardTYPE+'_modulus').value;
+								//localObj.value = exponent + document.getElementById( nfObj[i].id ).value;
+								return exponent + document.getElementById( nfObj[i].id ).value;
+						}
+					}catch(e){
+						return false;
+					}
+
+					pwd = true;
+				}
+			}
+		}
+	}
+	return pwd;
+}
+
+function getNavigatorInfoStr(){
+	return false;
+	if( navigator.appName.indexOf("Microsoft") > -1 ) // IE?
+	{
+
+	    if( navigator.appVersion.indexOf("MSIE 6") > -1) // IE6?
+	    {
+			var obj = document.getElementsByName('btn_info_title');
+			for ( var int = 0; int < obj.length; int++) {
+				obj[int].style.styleFloat = 'left';
+			}
+	    }
+	    else if(navigator.appVersion.indexOf( "MSIE 7") > -1) // IE7?
+	    {
+			var obj = document.getElementsByName('btn_info_title');
+			for ( var int = 0; int < obj.length; int++) {
+				obj[int].style.styleFloat = 'left';
+			}
+	    }else if(navigator.appVersion.indexOf( "MSIE 8") > -1) // IE8?
+	    {
+	    	if( getOSInfoStr() != "Windows XP" && getOSInfoStr() != "Windows Vista/Server 2008" && getOSInfoStr() != "Windows7"){
+			var obj = document.getElementsByName('btn_info_title');
+			for ( var int = 0; int < obj.length; int++) {
+				obj[int].style.styleFloat = 'left';
+			}
+			document.getElementById("nFilter_num_header").style.width = "358px";
+			document.getElementById("nFilter_num").style.width = "380px";
+	    	}
+	    }
+	}else{
+	}
+}
+
+function getNFilterBrowerInfo(){
+    var ua = navigator.userAgent;
+	if (ua.indexOf("MSIE 7") != -1) return "IE7";
+	else if (ua.indexOf("Trident") != -1) return "IE";
+    else if ( ua.indexOf("Firefox") != -1) return "Firefox";
+    else if ( ua.indexOf("Opera") != -1) return "Opera";
+	
+}
+
+function getNFilterOSInfo()
+{
+    var ua = navigator.userAgent;
+
+    if(ua.indexOf("NT 6.1") != -1) return "Windows7";
+    else if(ua.indexOf("NT 6.0") != -1) return "Windows Vista/Server 2008";
+    else if(ua.indexOf("NT 5.2") != -1) return "Windows Server 2003";
+    else if(ua.indexOf("NT 5.1") != -1) return "Windows XP";
+    else if(ua.indexOf("NT 5.0") != -1) return "Windows 2000";
+    else if(ua.indexOf("NT") != -1) return "Windows NT";
+    else if(ua.indexOf("9x 4.90") != -1) return "Windows Me";
+    else if(ua.indexOf("Win16") != -1) return "Windows 3.x";
+    else if(ua.indexOf("Windows") != -1) return "Windows";
+    else if(ua.indexOf("Macintosh") != -1) return "Macintosh";
+    else if(ua.indexOf("iPhone") != -1 ) return "iPhone";
+    else if(ua.indexOf("iPod") != -1 ) return "iPod";
+    else if(ua.indexOf("Android") != -1 ) return "Android";
+    else if(ua.indexOf("BlackBerry") != -1 ) return "BlackBerry";
+    else if(ua.indexOf("Linux") != -1) return "Linux";
+    else return "";
+}
+
+function getNowScroll()
+{
+	var de = document.documentElement;
+	var b = document.body;
+	var now = {};
+
+	now.X = document.all ? (!de.scrollLeft ? b.scrollLeft : de.scrollLeft) : (window.pageXOffset ? window.pageXOffset : window.scrollX);
+	now.Y = document.all ? (!de.scrollTop ? b.scrollTop : de.scrollTop) : (window.pageYOffset ? window.pageYOffset : window.scrollY);
+
+	return now;
+}

@@ -1,0 +1,707 @@
+/**
+ * Global variables
+ */
+var SESSION_EXPIRE_TIME = 1000*60*10; // 10 min
+var SESSION_REFRESH_SECOND = 1000;
+//var IMAGE_ROOT = ctx+"/resources/intn/com/images";
+
+var _DATE_MASK_LOCALE_ = {
+	"in":"99/99/9999",
+	"en":"99/99/9999",
+	"ko":"9999/99/99"
+};
+
+var _DATE_SHORT_LOCALE_ = {
+	"in":"dd/mm/yy",
+	"en":"mm/dd/yy",
+	"ko":"yy/mm/dd"
+};
+
+var _DATE_LONG_LOCALE_ = {
+	"in":"dd/MM/yyyy",
+	"en":"MM/dd/yyyy",
+	"ko":"yyyy/MM/dd"
+};
+
+/**
+ * Plugins
+ */
+$.fn.digits = function(){ 
+    return this.each(function(){ 
+        $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+    });
+};
+
+$(function () {
+	$("#logout_button").click(function() {
+		logout();
+	});
+	
+	$("#delay_session_btn").click(function() {
+		delay_session();
+	});
+	
+	$(".phishing_image").tooltip({
+		position: {
+	        my: "center bottom",
+	        at: "center top"
+		}
+	});
+	
+	$("#testSystem").show();	// show TEST-SYSTEM Text.
+	
+});
+
+
+/**
+ * Open child menu
+ */
+function closeOpenMenu(menuId) {
+	var menu = $("#menu_"+menuId);
+	var parent_menu = menu.parent();
+	menu.find("span").addClass("under_gray");
+	parent_menu.show();
+	parent_menu.parent().parent().show(); // transfer submenu.
+}
+
+/* ----------------------------------
+ * dialog
+ * ---------------------------------- */
+var lpShown = [];
+
+function load_dialog(_id, url, options, args, openFunc) {
+	
+	var post_args = {};
+	if(args) {
+		post_args = $.extend({}, args);
+	}
+	
+	options = $.extend(options, {
+		draggable:false,
+		open: function(event, ui) {
+			$(this).parent().find(".ui-dialog-titlebar").hide();
+			$(this).parent().css({
+				"background":"transparent",
+				"border":"0"
+			});
+			$(this).find('a, select, input, textarea, button').first().blur();
+			if(openFunc) {
+				openFunc();
+			}
+		}
+	});
+	
+	if(url) {
+		if ( !!options.method && (options.method == 'GET') ) {
+			$.get(ctx+url, post_args, function(data) {
+				popupBtnClick();
+
+				$("#"+_id).html(data).show();
+
+				popTopPosition($("#"+_id + ">div"));
+				if(openFunc) {
+					openFunc();
+				}
+			}, "html");
+		} else {
+			$.post(ctx+url, post_args, function(data) {
+				popupBtnClick();
+
+				$("#"+_id).html(data).show();
+
+				popTopPosition($("#"+_id + ">div"));
+				if(openFunc) {
+					openFunc();
+				}
+			}, "html");
+		}
+	}else {
+		popupBtnClick();
+
+		$("#"+_id).show();
+
+		popTopPosition($("#"+_id + ">div"));
+		if(openFunc) {
+			openFunc();
+		}
+	}
+
+	arrangeLayerPopupDim(_id);
+
+	lpShown.push(_id);
+
+}
+
+function open_dialog(_id, options, args, openFunc) {
+	load_dialog(_id, "", options, args, openFunc);
+}
+
+function close_dialog(_id) {
+	var positionTop = Math.abs(parseInt($('#wrap').css('top')));
+	var _p = lpShown.pop();
+	_p = lpShown[lpShown.length-1];
+	
+	if($(".layerPopWrap:visible").length <= 1){
+		$('.dim').hide();
+	}else{
+		var bz = $("#"+_p).css("z-index");
+		$('.dim').css('z-index', bz - 1);		
+	}
+	
+	$('#'+_id).hide();
+	
+	$('body').removeClass('scrollStop');
+	$('#wrap').css('top','0');
+	$(window).scrollTop(positionTop);
+}
+
+function close_all_dialog() {
+	var positionTop = Math.abs(parseInt($('#wrap').css('top')));
+	$('.layerPopWrap').hide();
+	$('.dim').hide();
+	$('body').removeClass('scrollStop');
+	$('#wrap').css('top','0');
+	$(window).scrollTop(positionTop);
+	
+	lpShown = [];
+} 
+
+function alert_dialog(title, msg, focus_id, callback, cls) {
+	if(cls){
+		$("#_alert_dialog_msg_").prev().attr("class", "ico02")
+	}else{
+		$("#_alert_dialog_msg_").prev().attr("class", "ico01")
+	}
+	$("#_alert_dialog_msg_").html(msg);
+	$("#layerPopAlert .popTit").html(title);
+	
+	$("#alertOK").one("click", function() {
+		if(focus_id) {
+			$("#"+focus_id).focus();
+		}
+		if(callback) {
+			try {			
+				callback();
+			}catch(e) {}
+		};
+		close_dialog("layerPopAlert");
+	});
+
+	popupBtnClick();
+	$("#layerPopAlert").show();
+	popTopPosition($("#layerPopAlert>div"));	
+	
+	arrangeLayerPopupDim("layerPopAlert");
+	lpShown.push("layerPopAlert");
+}
+
+function confirm_dialog(title, msg, callback) {
+	$("#_confirm_dialog_msg_").html(msg);
+	$("#layerPopConfirm .popTit").html(title);
+	
+	$("#confirmYes").one("click", function() {
+		if(callback) {
+			try {			
+				callback();
+			}catch(e) {}
+		};
+		close_dialog("layerPopConfirm");
+	});
+
+	popupBtnClick();
+	$("#layerPopConfirm").show();
+	popTopPosition($("#layerPopConfirm>div"));	
+	
+	arrangeLayerPopupDim("layerPopConfirm");
+	lpShown.push("layerPopConfirm");
+}
+
+function arrangeLayerPopupDim(_id){
+	var elIndex = parseInt($('#'+_id).css('z-index'));
+	var visLength = $(".layerPopWrap:visible").length;
+	
+	$('#'+_id).css('z-index', elIndex + (visLength*2));
+	$('.dim').css('z-index', $('#'+_id).css('z-index')-1).show();
+}
+
+/**
+ * 익스플러어에서 오버라이딩 되어서 메소드명 변경.
+ * @param title
+ * @param msg
+ * @param ok_func
+ * @param cancel_func
+ */
+function confirm_dialog_oc(title, msg, ok_func, cancel_func) {
+	$("#_confirm_dialog_msg_").html(msg);
+	$("#layerPopConfirm .popTit").html(title);
+	
+	$("#confirmYes").one("click", function() {
+		if(ok_func) {
+			try {
+				ok_func();
+			}catch(e) {}
+		};
+		close_dialog("layerPopConfirm");
+	});
+	
+	$("#confirmNo").one("click", function() {
+		if(cancel_func) {
+			try {
+				cancel_func();
+			}catch(e) {}
+		};
+		close_dialog("layerPopConfirm");
+	});
+
+	popupBtnClick();
+	$("#layerPopConfirm").show();
+	popTopPosition($("#layerPopConfirm>div"));	
+	
+	arrangeLayerPopupDim("layerPopConfirm");
+	lpShown.push("layerPopConfirm");
+}
+
+/* ----------------------------------
+ * calendar
+ * ---------------------------------- */
+function makeCalendarButton(_id, ext_options) {
+	var default_options = {
+		showOn: "button",
+        dateFormat : "dd/mm/yy",
+        buttonImage: ctx+"/resources/intn/common/images/red_cal.jpg",
+        buttonImageOnly: true
+	};
+	if(!ext_options) ext_options = {};
+	var options = $.extend({}, default_options, ext_options);
+	$("#"+_id).datepicker(options);
+	$("img.ui-datepicker-trigger").attr("style", 
+		"margin:-0px -4px 0 -0px; padding:0;vertical-align:middle;cursor:pointer;");
+}
+
+function getLocaleValue(map) {
+	/*
+	 * _LOCALE_ : get from pageContext.response.Locale in layout.jsp
+	 */
+	if(_LOCALE_ in map) {
+		return map[_LOCALE_];
+	}else {
+		return map["en"]; // default
+	}
+}
+
+function getDateMask() {
+	return getLocaleValue(_DATE_MASK_LOCALE_);
+}
+
+function getShortDateFmt() {
+	return getLocaleValue(_DATE_SHORT_LOCALE_);
+}
+
+function getLongDateFmt() {
+	return getLocaleValue(_DATE_LONG_LOCALE_);
+}
+
+/*
+ * 2012/01/01 or 01/01/2012 convert to 20120101 (yyyymmdd)
+ */
+function yyyymmdd(_date, sep) {
+	if(!sep) {
+		sep = "";
+	}
+	
+	var fmt = getShortDateFmt();
+	var fmtList = fmt.split("/");
+	var tmp = _date.split("/");
+	
+	var map = {};
+	map[fmtList[0]] = tmp[0];
+	map[fmtList[1]] = tmp[1];
+	map[fmtList[2]] = tmp[2];
+	
+	return map['yy']+sep+map['mm']+sep+map['dd'];
+}
+
+function makeDateJSFormat(_date, sep) {
+	if(!sep) {
+		sep = "";
+	}
+	
+	var fmt = getShortDateFmt();
+	var fmtList = fmt.split("/");
+	var tmp = _date.split("/");
+	
+	var map = {};
+	map[fmtList[0]] = tmp[0];
+	map[fmtList[1]] = tmp[1];
+	map[fmtList[2]] = tmp[2];
+	
+	// 20191202 Husain
+	// https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+	var yy = parseInt(map['yy'],10);
+	var mm = parseInt(map['mm'],10) - 1; //January is 0!
+	var dd = parseInt(map['dd'],10);
+	console.log("yy : " + yy + " mm : " + mm + " dd : " + dd);
+	
+	return Date.today().set({ year: yy, month: mm, day: dd });
+}
+
+
+function isBetweenMonths(startDTStr, endDTStr, numMonth) {
+	var dtbefS = makeDateJSFormat(endDTStr,"/");
+	var dtstrS = makeDateJSFormat(startDTStr,"/");
+	var dtstrE = makeDateJSFormat(endDTStr,"/");
+	dtbefS.add(numMonth).months();
+	return dtstrS.between(dtbefS, dtstrE);
+}
+
+
+/* ----------------------------------
+ * block div
+ * ---------------------------------- */
+function blockOn(_id, simpleMode, ext_options) {
+
+	if ( (ext_options != undefined) && !ext_options.dim) {
+	} else {
+		arrangeLayerPopupDim(_id);
+	}
+	
+	var options = {};
+	options = $.extend({}, options, ext_options);
+	if(!simpleMode) {
+		options = { 
+			css: { 
+		        border: 'none', 
+		        backgroundColor: 'transparent', 
+		        '-webkit-border-radius': '10px', 
+		        '-moz-border-radius': '10px', 
+		        opacity: 1, 
+		        /*color: '#fff'*/ 
+	    	},
+	    	
+	    	overlayCSS:  { 
+	            /*backgroundColor: '#55474b',
+	            opacity: 0.6 */ 
+	            backgroundColor: '#000000', 
+	            opacity: 0.0 
+	        }
+		};
+	}
+	$("#"+_id).block(options);
+}
+
+function blockOff(_id) {
+	$(".dim").hide();
+	$("#"+_id).unblock();
+}
+
+/* ----------------------------------
+ * logout popup
+ * ---------------------------------- */
+function logout() {
+	location.href = ctx+"/intn/spring_logout";
+}
+
+function logout_popup() {
+	var options = {
+		modal:true,
+		width: 480,
+		height: 'auto',
+		position: { 
+			my: "center center", 
+			at: "center center",
+			of: window
+		},
+		resizable:false
+	};
+	load_dialog("logout_popup", "/intn/logout/popup", options);
+//	$(".ui-dialog-content").css("margin-top", "100px");
+}
+
+function logout_popup_close() {
+	location.href = ctx+"/intn/spring_logout";
+}
+
+function print_timer(current_time,span_min_id, span_sec_id) {
+	var one_min = 1000 * 60;
+	var current_min = parseInt(current_time / one_min);
+	var current_sec = parseInt(current_time % one_min) / 1000;	
+	
+	$("#"+span_min_id).html(current_min);
+	$("#"+span_sec_id).html(current_sec);
+	$("#apDiv1").html(current_sec);
+}
+
+var expire_time = SESSION_EXPIRE_TIME;
+var current_time = expire_time;
+var refresh_second = SESSION_REFRESH_SECOND;
+
+function timer () {
+	current_time = current_time - refresh_second;
+	print_timer(current_time,"timer_min", "timer_sec");
+	if(current_time == 60000) {
+		logout_popup();
+	}
+	
+	if(current_time == 0) {
+		location.href = ctx+"/intn/spring_logout";
+	}
+}
+
+function init_session_timer(span_min_id, span_sec_id) {
+	
+	if ( $("#sessionExpireTime").val() != null ) {
+		SESSION_EXPIRE_TIME = $("#sessionExpireTime").val();
+		expire_time = SESSION_EXPIRE_TIME;
+		current_time = expire_time;
+	}
+	
+	setInterval(timer, refresh_second);
+}
+
+function delay_close() {
+	$.post(ctx+"/intn/login/delay", {
+	}, function(data) {
+		current_time = SESSION_EXPIRE_TIME;
+		close_dialog('logout_popup');
+	}, "html");
+}
+
+function delay_session() {
+	$.post(ctx+"/intn/login/delay", {
+	}, function(data) {
+		current_time = SESSION_EXPIRE_TIME;
+	}, "html");
+}
+
+/* ----------------------------------
+ * slip 
+ * ---------------------------------- */
+function saveSlip(_confirmSlip, _slipData, _hiddenForm) {
+	$("#blockBtn").hide();
+
+	$(".layerPopWrap").css("overflow", "visible");
+	$("body").removeClass("scrollStop");
+	var ie = (function () {
+	    var undef, v = 3, div = document.createElement('div');
+
+	    while (
+	        div.innerHTML = '<!--[if gt IE '+(++v)+']><i></i><![endif]-->',
+	        div.getElementsByTagName('i')[0]
+	    );
+	    return v > 4 ? v : undef;
+	}());
+	if ( ie < 9 ) {
+		alert_dialog("", "Sorry, Internet Explorer is not yet supported.");
+		return;
+	}
+	
+	// old html2canvas
+	/*
+	html2canvas($("#"+_confirmSlip).parent(), {
+		background: '#FFFFFF',
+		onrendered: function(canvas) {
+			if (typeof FlashCanvas != "undefined") {
+			    FlashCanvas.initElement(canvas);
+			}
+			$("#"+_slipData).val(canvas.toDataURL("image/png"));
+			
+			$(".layerPopWrap").css("overflow", "auto");
+			$("body").addClass("scrollStop");
+			
+			
+			$("#"+_hiddenForm).submit();
+		}
+	});
+	*/
+	
+	// 20200128 JKCHO added domtoimage
+	var node = document.getElementById(_confirmSlip).parentNode;
+
+	//domtoimage.toPng(node)
+	console.log("_confirmSlip : "+_confirmSlip);
+	
+	domtoimage.toPng(node,{bgcolor: '#FFFFFF'})
+    .then(function (dataUrl) {
+        //var link = document.createElement('a');
+        //link.download = 'slip.png';
+        //link.href = dataUrl;
+        //link.click();
+        
+    	$("#"+_slipData).val(dataUrl);
+        
+        $(".layerPopWrap").css("overflow", "auto");
+		$("body").addClass("scrollStop");
+		
+		
+		$("#"+_hiddenForm).submit();
+    })
+    .catch(function(error){
+    	console.error('save error',error);
+    });
+	
+	
+	$("#blockBtn").show();
+}
+	
+	
+/* ----------------------------------
+ * utility
+ * ---------------------------------- */
+function passcheck(pass){
+    var alpha = /^[a-zA-Z]+$/;
+    var number = /^[0-9]+$/;
+    var letters = false;
+    var numbers = false;
+    for(var i=0; i<pass.length; i++){
+        if(pass.substr(i, 1).match(alpha)){
+            letters = true;
+        }
+        if(pass.substr(i, 1).match(number)){
+            numbers = true;
+        }
+    }
+    if(letters && numbers){
+        return true;
+    } else {
+        return false; // Must have at least one letter and one number
+    }
+}
+
+function divPrint(divId) {
+	var initBody = document.body.innerHTML;
+	window.onbeforeprint = function() {
+		document.body.innerHTML = document.getElementById(divId).innerHTML;
+	};
+	window.onafterprint = function() {
+		document.body.innerHTML = initBody;
+	};
+	window.print();
+}
+
+function floorNumber(number) {
+	t = number.split(".");
+	if(t.length >= 2) {
+		return t[0]+"."+t[1].substring(0,2);
+	}else {
+		return number;
+	}
+}
+
+function makeComma(value) {
+	var num = value.replace(/,/g, '');
+	if (!num) return;
+	num = floorNumber(num);
+	return num.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+
+function makeLocaleCurrency(value) {
+	var num = value.replace(/,/g, '');
+	num = num.replace(/\./g, '');
+	if (!num) return;
+	num = floorNumber(num);
+/*  금액 입력부와 대표 금액부의 표시가 항상 9,999.00 형식이어서 여기서만 언어에 따라 바꾸면 전체 표시 형식이 맞지 않는다.
+ *  여기만 바꾸면 일관성이 없어서 일단 막아 놓음
+	if(_LOCALE_ == 'in') {
+		return num.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+	}
+*/
+	return num.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+
+function makeCurrency(_id) {
+	function _makeComma(v) {
+		$(v).val(makeComma($(v).val()));
+	};
+	
+	$('#'+_id).numeric({allow:".,"});
+	$('#'+_id).blur(function(){
+		$(this).val($(this).val().replace(/,/g, ""));
+		$('#'+_id).currency({
+		    hidePrefix: true
+		});
+	});
+	$('#'+_id).bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+	$('#'+_id).click(function() {
+		_makeComma(this);
+	});
+	$('#'+_id).keyup(function(event) {
+		if(event.which >= 37 && event.which <= 40){
+			event.preventDefault();
+		}
+		_makeComma(this);
+	});
+}
+/*@@ PHW 주석처리
+function preventKorean(_id) {
+	$('#'+_id).keyup(function(event) {
+		var val = $('#'+_id).val();
+		var length = val.length;
+		var str = val.substr(length-1,length);
+		var numUnicode = str.charCodeAt(0);
+		if ( 44032 <= numUnicode && numUnicode <= 55203 || 12593 <= numUnicode && numUnicode <= 12643 ) {
+			// korean
+			$('#'+_id).val(val.substr(0, length-1));
+		}
+	});
+}*/
+
+function preventKorean(_id) {
+	$('#'+_id).keyup(function(event) {
+		var val = $('#'+_id).val();
+		if ( !(event.keyCode >= 37 && event.keyCode <= 40 ) ) {
+			$('#'+_id).val(val.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, ''));
+		}
+	});
+
+	$('#'+_id).blur(function(event) {
+		var val = $('#'+_id).val();
+		if ( !(event.keyCode >= 37 && event.keyCode <= 40 ) ) {
+			$('#'+_id).val(val.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, ''));
+		}
+	});
+}
+
+/**
+ * 바이트 문자 입력가능 문자수 체크
+ * 
+ * @param id : tag id 
+ * @param title : tag title
+ * @param maxLength : 최대 입력가능 수 (byte)
+ * @returns {Boolean}
+ */
+function maxLengthCheck(id, maxLength){
+     var obj = $(id);
+     if(maxLength == null) {
+         maxLength = obj.attr("maxLength") != null ? obj.attr("maxLength") : 1000;
+     }
+     
+     if(Number(byteCheck(obj)) > Number(maxLength)) {
+         obj.focus();
+         return false;
+     } else {
+         return true;
+    }
+}
+ 
+/**
+ * 바이트수 반환  
+ * 
+ * @param el : tag jquery object
+ * @returns {Number}
+ */
+function byteCheck(el){
+    var codeByte = 0;
+    for (var idx = 0; idx < el.val().length; idx++) {
+        var oneChar = escape(el.val().charAt(idx));
+        if ( oneChar.length == 1 ) {
+            codeByte ++;
+        } else if (oneChar.indexOf("%u") != -1) {
+            codeByte += 2;
+        } else if (oneChar.indexOf("%") != -1) {
+            codeByte ++;
+        }
+    }
+    return codeByte;
+}
