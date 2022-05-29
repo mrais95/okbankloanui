@@ -11,6 +11,8 @@
     .three-col-container{grid-template-columns: auto;}
     .mshow{display:inline;}
     .sub-title{text-align: center;}
-    .item1{padding-left: 10px;}
-    .item2{padding: 0px;}
+    .item1{padding-left: 10px; padding-top: 25px; height: 80px;}
+    .item2{padding: 10px; height: 80px;}
+    .popup-header h3{font-size: 20px;}
+    .sumbit{margin-top: 0px;}
   }
