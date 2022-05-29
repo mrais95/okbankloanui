@@ -6,7 +6,7 @@
     .header .utilW ul.btnAdd3 {right:140px;}
     .column {flex: 100%;}
     .grid-container{grid-template-columns: auto;}
-    .content-img img {width: 400px; margin-top: 0px; margin-bottom: 20px;}
+    .content-img img {width: 300px; margin-top: 0px; margin-bottom: 20px;}
     .popup .inner {width: 90%;}
     .three-col-container{grid-template-columns: auto;}
   }
