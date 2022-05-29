@@ -9,7 +9,8 @@
 .popWrap .btn a {display:inline-block; background:url('../images/pc/popup/btnClose.png') no-repeat center; background-size:30px;}
 .popWrap .btn a span {display:block; width:30px; height:30px; text-indent:-9999px;}
 
-h2.popTit {padding:12px 0; margin:0; /* background:url('../images/pc/popup/popLogo.png') no-repeat 20px center; background-size:34px; border-bottom:1px solid #cccccc;*/ color:#1a1a1a; font-size:25px; font-size:2.5rem; line-height:120%; text-align:center;}
+.popTit {background-image: url('bg-black-square.jpg');}
+h2.popTit {padding:12px 0; margin:0; color:white; font-size:32px; line-height:120%; text-align:center; font-weight: 500;}
 
 .popConW {padding:15px 3% 20px 3%;}
 .pW03 .popConW {padding:15px 6% 20px 6%;}

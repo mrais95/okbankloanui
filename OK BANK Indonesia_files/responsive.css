@@ -1,0 +1,12 @@
+@media only screen and (max-width: 700px) {
+    .mhide{display: none;}
+    .header .utilW ul.lang {right:20px;}
+    .header .utilW ul.btnAdd1 {left:20px;}
+    .header .utilW ul.btnAdd2 {right:90px;}
+    .header .utilW ul.btnAdd3 {right:140px;}
+    .column {flex: 100%;}
+    .grid-container{grid-template-columns: auto;}
+    .content-img img {width: 400px; margin-top: 0px; margin-bottom: 20px;}
+    .popup .inner {width: 90%;}
+    .three-col-container{grid-template-columns: auto;}
+  }

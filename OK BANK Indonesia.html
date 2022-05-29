@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="./OK BANK Indonesia_files/common.css">
     <link rel="stylesheet" href="./OK BANK Indonesia_files/popup.css">
     <link rel="stylesheet" href="./OK BANK Indonesia_files/retailloan_jquery.modal.css">
+
+    <link rel="stylesheet" href="./OK BANK Indonesia_files/responsive.css">
     
     <!-- js -->  
     <!--script src="../../../static/pc/js/ui_script.js"></script-->
@@ -69,38 +71,40 @@
 
 <body>
     <!-- wrap -->
-    <div class="main-wrap" style="width:1200px; margin:auto">
+    <div class="main-wrap" style="margin:auto">
 
         <!-- header -->
         <div class="header">
             <div class="content table-lay">
-                <h1><img src="./OK BANK Indonesia_files/logo-header.png" th:src="@{resources/intn/common/images/retailloan/icon/logo-header.png}" alt="OK BANK Indonesia LOGO"></h1>
             </div>
+            
             <div class="utilW">
                 <ul class="btnAdd1">
                 <a href="https://www.okbank.co.id/?home">
-                <img src="./OK BANK Indonesia_files/homepage_button.png">
+                <img src="./OK BANK Indonesia_files/logo-header.png" alt="OK BANK Indonesia LOGO">
                 </a>
                 </ul>
                 <ul class="btnAdd2">
                 <a href="https://m.okbank.co.id/resources/intn/common/download_en.html">
-                <img src="./OK BANK Indonesia_files/button_download.png">
+                <img src="./OK BANK Indonesia_files/download_yellow.png">
+                &nbsp;<span class="mhide">Download</span>
                 </a>
                 </ul>
                 <ul class="btnAdd3">
                 <a href="https://m.okbank.co.id/">
-                <img src="./OK BANK Indonesia_files/OK_Internet_Banking1.png">
+                <img src="./OK BANK Indonesia_files/internet_banking_yellow.png">
+                &nbsp;<span class="mhide">Internet Banking</span>
                 </a>
                 </ul>
                 <ul class="lang">
                     <li class="on" lang="id">
-                        <a href="javascript:location.href=&#39;/intn/loan/reg?lang=in&#39;" id="id_href" style="color: white;">IN</a>
+                        <a href="javascript:location.href=&#39;/intn/loan/reg?lang=in&#39;" id="id_href">IN</a>
                     </li>
                     <!--  <li  lang="ko">
                         <a href="javascript:location.href='/intn/main?lang=ko'">KO</a>
                     </li> -->
                     <li class="on" lang="en" style="border-right:0px">
-                        <a href="javascript:location.href=&#39;/intn/loan/reg?lang=en&#39;" id="en_href" style="color: black;">EN</a>
+                        <a href="javascript:location.href=&#39;/intn/loan/reg?lang=en&#39;" id="en_href">EN</a>
                     </li>
                 </ul>
             </div>
@@ -108,7 +112,7 @@
         
     <th:block layout:fragment="content-body">
         <!-- container -->
-        <div class="container" style="width:1100px; margin:auto">
+        <div class="container" style="margin:auto">
 
             <form name="loanFrm" id="loanFrm" method="post" action="https://m.okbank.co.id/intn/loan/reg_commit"> 
             <input type="hidden" name="loanId" th:value="">
@@ -117,44 +121,47 @@
                     
                     <div class="content-tit">
                         <div class="content">
-                            <h3 class="tc-red"><img src="./OK BANK Indonesia_files/ret-main.png" th:src="@{resources/intn/common/images/retailloan/icon/ret-main.png}" alt="OK! Merchant Loan"></h3><!-- 2019-05-07 -->
+                            <h3>Pengajuan Pinjaman KTA</h3><!-- 2019-05-07 -->
+                            <div class="divider-title"></div>
                         </div>
                     </div>
                     <div class="content-body first">                   
                         
-                        <div class="content" style="width:1100px; margin:auto">
+                        <div class="content">
                             <div class="loan-info">
-                                <div class="layout-half">
-                                    <div class="content-img layout-half-col1">
+                                <div class="layout-half grid-container">
+                                    <div class="content-img layout-half-col1 grid-item">
                                         <img src="./OK BANK Indonesia_files/img-store-r.png" th:src="@{/resources/intn/common/images/retailloan/img-store-r.png}" alt="Merchant Loan Online Store image">
                                     </div>
-                                    <div class="layout-half-col2">
-                                        <h4 class="title">Informasi produk</h4>
+                                    <div class="layout-half-col2 grid-item">
+                                        <div class="brown-bg">
+                                            <h4 class="title"><img src="./OK BANK Indonesia_files/g906.png" width="20px">&nbsp;&nbsp;Informasi Produk</h4>
+                                        </div>
                                         <div class="list-info">
-                                             <dl>
-                                                <dt>Target Konsumen</dt>
-                                                <dd>Karyawan, Pedagang, Ibu Rumah Tangga, Pelajar</dd>
-                                            </dl>
-                                            <dl>
-                                                <dt>Jumlah Pinjaman</dt>
-                                                <dd>Rp3 juta ~ Rp200 Juta</dd>
-                                            </dl>
-                                            <dl>
-                                               <dt>Bunga</dt>
-                                                <dd>0.89% ~ 3.49% (Flat per Bulan)</dd>
-                                            </dl>
-                                            <dl>
-                                                <dt>Periode</dt>
-                                                <dd>6, 12, 18, 24, 30, 36 (Maksimum 60 Bulan)</dd>
-                                            </dl>
-                                            <dl>
-                                                <dt>Biaya</dt>
-                                                <dd>Biaya administrasi 4.0%</dd>
-                                            </dl>
-                                            <dl>
-                                                <dt>Dokumen</dt>
-                                                <dd>eKTP, NPWP, slip gaji ** Dalam hal pedagang, data omset, SIUP, TDP</dd>
-                                            </dl>
+                                             <div class="info-container">
+                                                <div class="item1">Target Konsumen</div>
+                                                <div class="item2">Karyawan, Pedagang, Ibu Rumah Tangga, Pelajar</div>
+                                             </div>
+                                             <div class="info-container">
+                                                <div class="item1">Jumlah Pinjaman</div>
+                                                <div class="item2">Rp3 juta ~ Rp200 Juta</div>
+                                            </div>
+                                            <div class="info-container">
+                                                <div class="item1">Bunga</div>
+                                                <div class="item2">0.89% ~ 3.49% (Flat per Bulan)</div>
+                                            </div>
+                                            <div class="info-container">
+                                                <div class="item1">Periode</div>
+                                                <div class="item2">6, 12, 18, 24, 30, 36 (Maksimum 60 Bulan)</div>
+                                            </div>
+                                            <div class="info-container">
+                                                <div class="item1">Biaya</div>
+                                                <div class="item2">Biaya administrasi 4.0%</div>
+                                            </div>
+                                            <div class="info-container">
+                                                <div class="item1">Dokumen</div>
+                                                <div class="item2">eKTP, NPWP, slip gaji ** Dalam hal pedagang, data omset, SIUP, TDP</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div><!-- //layout-half -->
@@ -184,44 +191,24 @@
                                     <span class="hyphen"><button type="button" onclick="layerpopupOpen(&#39;popup1&#39;)">Lihat istilah</button></span>
                                 </div>
                             </div>
-                            
+
                             <div class="template" style="margin-left:5px; margin-right:5px;">
                                 <div class="layout-three">
-                                    <div class="sub-title on">
-                                        <span class="number-circle2">1</span>
-                                        <h4>Verifikasi informasi nasabah*</h4>
+                                    <div class="sub-title on brown-bg">
+                                        <h4><img src="./OK BANK Indonesia_files/personal.png" width="20px">&nbsp;&nbsp;Verifikasi Informasi Nasabah*</h4>
                                     </div>       
                                     <fieldset class="fieldset">
-                                        <ul class="type-table line-bottom-none">
-                                            <li>
-                                                <dl>
-                                                    <dt><label for="custNm">Nama Sesuai KTP</label></dt>
-                                                    <dd>
+                                        <ul class="type-table line-bottom-none three-col-container">
+                                            <div class="three-col-item">
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label for="custNm">Nama Sesuai KTP</label></dt>
+                                                    <dd class="double-col-item">
                                                         <input type="text" class="form-input short" style="text-transform: uppercase" name="custNm" id="custNm" placeholder="" maxlength="50">
                                                     </dd>
                                                 </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                    <dt><label for="eKtpNum">NIK eKTP</label></dt>
-                                                    <dd>
-                                                        <input type="text" class="form-input short" name="eKtpNum" id="eKtpNum" value="" placeholder="" minlength="16" maxlength="16">
-                                                    </dd>
-                                                </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                    <dt><label for="mbphNo">Nomor HP</label></dt>
-                                                    <dd>
-                                                        <input type="tel" class="form-input short" name="mbphNo" id="mbphNo" value="" placeholder="" maxlength="20" fn-numberic="">
-                                                        <span class="input-desc">Tanpa menggunakan "-"</span>
-                                                    </dd>
-                                                </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                    <dt><label>Kota tempat tinggal</label></dt>
-                                                    <dd>
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label>Kota tempat tinggal</label></dt>
+                                                    <dd class="double-col-item">
                                                         <select class="form-select short" name="area" id="area" title="Kota tempat tinggal">
                                                             <option value="" selected="selected">== Pilih ==</option>
                                                             <option value="JAKARTA">Jakarta</option>
@@ -235,7 +222,26 @@
                                                         </select>
                                                     </dd>
                                                 </dl>
+                                            </div>
+                                            <div class="three-col-item">
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label for="eKtpNum">NIK eKTP</label></dt>
+                                                    <dd class="double-col-item">
+                                                        <input type="text" class="form-input short" name="eKtpNum" id="eKtpNum" value="" placeholder="" minlength="16" maxlength="16">
+                                                    </dd>
+                                                </dl>
+                                            </div>
+                                            <div class="three-col-item">
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label for="mbphNo">Nomor HP</label></dt>
+                                                    <dd class="double-col-item">
+                                                        <input type="tel" class="form-input short" name="mbphNo" id="mbphNo" value="" placeholder="" maxlength="20" fn-numberic="">
+                                                        <br>
+                                                        <span class="input-desc">Tanpa menggunakan "-"</span>
+                                                    </dd>
+                                                </dl>
                                             </li>
+                                            </div>
                                         </ul>
                                     </fieldset>
                                 </div>
@@ -243,16 +249,15 @@
                             
                             <div class="template mgn-t-20" style="margin-left:5px; margin-right:5px;">
                                 <div class="layout-three">
-                                    <div class="sub-title on">
-                                        <span class="number-circle2">2</span>
-                                       <h4>Informasi Pengajuan pinjaman*</h4>
+                                    <div class="sub-title on brown-bg">
+                                       <h4><img src="./OK BANK Indonesia_files/loan.png" width="20px">&nbsp;&nbsp;Informasi Pengajuan Pinjaman*</h4>
                                     </div>       
                                     <fieldset class="fieldset">
-                                        <ul class="type-table line-bottom-none">
-                                            <li>
-                                                <dl>
-                                                    <dt><label>Pekerjaan</label></dt>
-                                                    <dd>
+                                        <ul class="type-table line-bottom-none three-col-container">
+                                            <div class="three-col-item">
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label>Pekerjaan</label></dt>
+                                                    <dd class="double-col-item">
                                                         <select class="form-select short" name="jobGbCd" id="jobGbCd" title="Pekerjaan" th:fn-component="@{/component/select?groCd=C0004}">
                                                             <option value="" selected="selected">== Pilih ==</option>
                                                             <option value="001">Karyawan</option>
@@ -264,56 +269,15 @@
                                                         </select>
                                                     </dd>
                                                 </dl>
-                                            </li>
-                                            <li id="company_name">
-                                                <dl>
-                                                    <dt><label for="jobPlace">Nama <br>Perusahaan<br>atau toko</label></dt>
-                                                    <dd>
-                                                        <input type="text" class="form-input short" name="jobPlace" id="jobPlace" placeholder="" maxlength="50">
-                                                    </dd>
-                                                </dl>
-                                            </li>
-                                            <li id="working_since">
-                                                <dl>
-                                                    <dt><label for="workStMm">Mulai bekerja sejak</label></dt>
-                                                    <dd>
-                                                        <input type="tel" class="form-input mm" name="workStMm" id="workStMm" value="" placeholder="MM" minlength="2" maxlength="2">
-                                                        <input type="tel" class="form-input yyyy" name="workStYyyy" id="workStYyyy" value="" placeholder="YYYY" minlength="4" maxlength="4">
-                                                    </dd>
-                                                </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                    <dt><label for="emadr">Alamat Email</label></dt>
-                                                    <dd>
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label for="emadr">Alamat Email</label></dt>
+                                                    <dd class="double-col-item">
                                                         <input type="email" class="form-input short" name="emadr" id="emadr" maxlength="100">
                                                     </dd>
                                                 </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                    <dt><label>Berapa jumlah kartu kredit</label></dt>
-                                                    <dd>
-                                                        <select class="form-select short" name="crcdCnt" id="crcdCnt" title="Berapa jumlah kartu kredit" th:fn-component="@{/component/select?groCd=C0005}">
-                                                            <option value="" selected="selected">== Pilih ==</option>
-                                                            <option value="000">Tidak punya kartu kredit</option>
-                                                            <option value="001">1 kartu credit atau lebih</option>
-                                                        </select>
-                                                    </dd>
-                                                </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                   <dt><label for="rqusAmt">Jumlah Pinjaman</label></dt>
-                                                    <dd>
-                                                        <input type="text" class="form-input short" name="rqusAmt" id="rqusAmt" placeholder="" maxlength="20" fn-money="">
-                                                    </dd>
-                                                </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                    <dt><label for="lonUseCd">Tujuan Pinjaman</label></dt>
-                                                    <dd>
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label for="lonUseCd">Tujuan Pinjaman</label></dt>
+                                                    <dd class="double-col-item">
                                                         <select class="form-select short" name="lonUseCd" id="lonUseCd" title="Tujuan pinjaman selesai" th:fn-component="@{/component/select?groCd=C0001}">
                                                             <option value="" selected="selected">== Pilih ==</option>
                                                             <option value="001">Pelunasan Hutang</option>
@@ -331,11 +295,33 @@
                                                         </select>
                                                     </dd>
                                                 </dl>
-                                            </li>
-                                            <li>
-                                                <dl>
-                                                    <dt><label>Jangka Waktu</label></dt>
-                                                    <dd>
+                                                <dl id="monthly_income" class="double-col-container">
+                                                    <dt class="double-col-item"><label>Pendapatan Perbulan(Rp)</label></dt>
+                                                    <dd class="double-col-item">
+                                                        <input type="text" class="form-input short" name="monthInc" id="monthInc" placeholder="" maxlength="20" fn-money="">
+                                                    </dd>
+                                                </dl>
+                                            </div>
+                                            <div class="three-col-item">
+                                                <dl id="company_name" class="double-col-container">
+                                                    <dt class="double-col-item"><label for="jobPlace">Nama <br>Perusahaan<br>atau toko</label></dt>
+                                                    <dd class="double-col-item">
+                                                        <input type="text" class="form-input short" name="jobPlace" id="jobPlace" placeholder="" maxlength="50">
+                                                    </dd>
+                                                </dl>
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label>Berapa jumlah kartu kredit</label></dt>
+                                                    <dd class="double-col-item">
+                                                        <select class="form-select short" name="crcdCnt" id="crcdCnt" title="Berapa jumlah kartu kredit" th:fn-component="@{/component/select?groCd=C0005}">
+                                                            <option value="" selected="selected">== Pilih ==</option>
+                                                            <option value="000">Tidak punya kartu kredit</option>
+                                                            <option value="001">1 kartu credit atau lebih</option>
+                                                        </select>
+                                                    </dd>
+                                                </dl>
+                                                <dl class="double-col-container">
+                                                    <dt class="double-col-item"><label>Jangka Waktu</label></dt>
+                                                    <dd class="double-col-item">
                                                         <select class="form-select short" name="lonTr" id="lonTr" title="Jangka waktu selesai" th:fn-component="@{/component/select?groCd=C0002}">
                                                             <option value="" selected="selected">== Pilih ==</option>
                                                             <option value="06">6 bulan</option>
@@ -351,11 +337,24 @@
                                                         </select>
                                                     </dd>
                                                 </dl>
-                                            </li>
-                                            <li id="employment_status">
-                                                <dl>
-                                                    <dt><label>Status Bekerja</label></dt>
-                                                    <dd>
+                                            </div>
+                                            <div class="three-col-item">
+                                                <dl id="working_since" class="double-col-container">
+                                                    <dt class="double-col-item"><label for="workStMm">Mulai bekerja <br>sejak</label></dt>
+                                                    <dd class="double-col-item">
+                                                        <input type="tel" class="form-input mm" name="workStMm" id="workStMm" value="" placeholder="MM" minlength="2" maxlength="2">
+                                                        <input type="tel" class="form-input yyyy" name="workStYyyy" id="workStYyyy" value="" placeholder="YYYY" minlength="4" maxlength="4">
+                                                    </dd>
+                                                </dl>
+                                                <dl class="double-col-container">
+                                                   <dt class="double-col-item"><label for="rqusAmt">Jumlah Pinjaman</label></dt>
+                                                    <dd class="double-col-item">
+                                                        <input type="text" class="form-input short" name="rqusAmt" id="rqusAmt" placeholder="" maxlength="20" fn-money="">
+                                                    </dd>
+                                                </dl>
+                                                <dl id="employment_status" class="double-col-container">
+                                                    <dt class="double-col-item"><label>Status Bekerja</label></dt>
+                                                    <dd class="double-col-item">
                                                         <select class="form-select short" name="lonEmpSts" id="lonEmpSts">
                                                             <option value="" selected="selected"></option>
                                                             <option value="1">Tetap</option>
@@ -364,15 +363,7 @@
                                                         </select>
                                                     </dd>
                                                 </dl>
-                                            </li>
-                                            <li id="monthly_income">
-                                                <dl>
-                                                    <dt><label>Pendapatan Perbulan(Rp)</label></dt>
-                                                    <dd>
-                                                        <input type="text" class="form-input short" name="monthInc" id="monthInc" placeholder="" maxlength="20" fn-money="">
-                                                    </dd>
-                                                </dl>
-                                            </li>
+                                            </div>
                                         </ul>
                                     </fieldset>
                                 </div>
@@ -383,18 +374,19 @@
                     <div class="content">
                         <div class="btn-wrap">
                                 <!-- button class="btn red more" id="retailApply">Ajukan pinjaman</button-->
-                                <a href="javascript:commit();" class="btn red more" id="retailApply">Ajukan pinjaman</a>
+                                <a href="javascript:commit();" class="btn red more sumbit" id="retailApply"><img src="./OK BANK Indonesia_files/check.png" width="25px">&nbsp;&nbsp;Ajukan Pinjaman</a>
                             </div>
                         </div>
                     </div>
                 </div><!-- //content-wrap -->    
             </form>
-            <div style="background-color: #55474a; height: 52px; width: 1100px; margin:0 auto; text-align:left;">
-                <p style="color: white; padding-top: 10px; padding-left: 20px;">OK!Bank registered and supervised by Financial Services Authority (Otoritas Jasa Keuangan) .<br>Copyright (c) 2017 OK!Bank. All Rights Reserved. </p>
-            </div> 
+            <div style="background-image: url('./OK BANK Indonesia_files/bg-black.jpg'); background-size: cover; margin:0 auto; text-align:center;">
+                <p style="color: white; font-weight: 500; padding-top: 15px; padding-left: 60px;">OK!Bank registered and supervised by Financial Services Authority (Otoritas Jasa Keuangan).<br></p>
+                <p style="color: #faa61a; padding-top: 10px; padding-bottom: 10px; padding-left: 60px; font-size: 14px;">Copyright (c) 2017 OK!Bank. All Rights Reserved. </p>
+            </div>
         </div><!-- //container -->
         <div id="layerPopAlert" class="layerPopWrap">
-		    <div id="_alert_dialog_" class="popWrap pW03 popPos01" style="border: 2px solid black;">
+		    <div id="_alert_dialog_" class="popWrap pW03 popPos01" style="border: 1px solid rgb(279 36 75 / 30%); border-radius: 5px;">
 		        <h2 class="popTit"></h2>
 		        <!-- popConW -->
 		        <div class="popConW">
@@ -403,7 +395,7 @@
 		                <p id="_alert_dialog_msg_"></p>
 		            </div>
 		            <div class="btnWrapC">
-		                <a href="javascript:void(0);" class="btnB01" id="alertOK">OK</a>
+		                <a href="javascript:void(0);" class="btnB01" id="alertOK"> OK</a>
 		            </div>
 		            <!-- <span class="btn"><a href="javascript:close_dialog('layerPopAlert');" class="btnClose"><span>Close</span></a></span> --> 
 		        </div>
@@ -440,13 +432,13 @@
             <div class="dimRetailLoan"></div>
             <div class="inner">
                 <div class="popup-header align-r" style="height:50px;">
+                    <h3><img src="./OK BANK Indonesia_files/t&c.png" width="30px">&nbsp;&nbsp;<span class="ok-orange">OK BANK</span> <span>Persyaratan</span></h3>
                     <button class="close" type="button" onclick="layerpopupClose()">
                         <img src="./OK BANK Indonesia_files/icon-h-close-dark.png" th:src="@{/resources/intn/common/images/retailloan/icon/icon-h-close-dark.png}" alt="close button">
                     </button>
                 </div><!-- //popup-header -->
                 <div class="popup-view">
                     <div class="wrap-require">
-                        <h3>OK BANK Parsyaratan</h3>
                         <ol class="list---decimal-dot">
                             <li>1. Pemohon akan mengikuti persyaratan dan ketentuan produk pinjaman (retail loan) PT Bank Oke Indonesia.</li><br>
                             <li>2. Ketentuan pinjaman, termasuk jumlah pinjaman dan tingkat bunga, dapat berubah sesuai dengan hasil review pinjaman.</li><br>
@@ -469,7 +461,7 @@
                     </div>
                 </div><!-- //popup-view -->
                 <div class="popup-footer tac bor-t-gray pad-t-20">
-                    <button type="button" class="btn red" onclick="aggrTermYes()">Oke</button>
+                    <button type="button" class="btn red sumbit" onclick="aggrTermYes()"><img src="./OK BANK Indonesia_files/check.png" width="25px">&nbsp;Oke</button>
                 </div><!-- //popup-footer -->
             </div>
         </div><!-- //popup1 -->

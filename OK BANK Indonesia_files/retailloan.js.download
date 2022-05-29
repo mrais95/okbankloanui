@@ -2,12 +2,12 @@ var state = false;
 $(document).ready(function(){
 	console.log("locale" + _LOCALE_);
 	if (_LOCALE_ == "en"){
-		document.getElementById("en_href").style.color = 'white';
-		document.getElementById("id_href").style.color = 'black';
+		document.getElementById("en_href").style.color = '#faa61a';
+		document.getElementById("id_href").style.color = 'white';
 	}
 	if (_LOCALE_ == "in"){
-		document.getElementById("en_href").style.color = 'black';
-		document.getElementById("id_href").style.color = 'white';
+		document.getElementById("en_href").style.color = 'white';
+		document.getElementById("id_href").style.color = '#faa61a';
 	}
 	
 	makeCurrency('rqusAmt');
